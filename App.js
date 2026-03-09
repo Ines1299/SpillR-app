@@ -1,14 +1,10 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import React from "react";
+import Home from "./app/index";
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>SPILLR!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
+  return <Home />;
 }
+<<<<<<< test
 //styling is done below
 const styles = StyleSheet.create({
   container: {
@@ -18,3 +14,5 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 });
+=======
+>>>>>>> main
