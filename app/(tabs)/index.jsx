@@ -1,10 +1,12 @@
 import { View, Text, StyleSheet } from "react-native";
+import Header from "../components/home-page/header";
+import Trending from "../components/home-page/trending";
 
 export default function Home() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>SpillR</Text>
-      <Text>Trending</Text>
+      <Header />
+      <Trending />
     </View>
   );
 }
@@ -13,10 +15,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
-  },
-  title: {
-    fontWeight: "bold",
-    fontSize: 18,
+    paddingTop: 80,
   },
 });
