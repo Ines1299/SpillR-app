@@ -1,21 +1,26 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import { Link } from "expo-router";
-import NavigationBar from "./navigationBar";
+import NavigationBar from "./navigation";
 
-const notificationsPage = () => {
+const SearchPage = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Notifications</Text>
+      <View style={styles.content}>
+        <Text style={styles.title}>Search</Text>
+      </View>
       <NavigationBar />
     </View>
   );
 };
 
-export default notificationsPage;
+export default SearchPage;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  content: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",

@@ -12,13 +12,13 @@ const NavigationBar = () => {
       <Link href="/" style={{ marginTop: 10 }}>
         <Image source={homeIcon} style={styles.icon} />
       </Link>
-      <Link href="/searchPage" style={{ marginTop: 10 }}>
+      <Link href="/search" style={{ marginTop: 10 }}>
         <Image source={searchIcon} style={styles.icon} />
       </Link>
-      <Link href="/userPage" style={{ marginTop: 10 }}>
+      <Link href="/user" style={{ marginTop: 10 }}>
         <Image source={userIcon} style={styles.icon} />
       </Link>
-      <Link href="/notificationsPage" style={{ marginTop: 10 }}>
+      <Link href="/notifications" style={{ marginTop: 10 }}>
         <Image source={notificationIcon} style={styles.icon} />
       </Link>
     </View>
