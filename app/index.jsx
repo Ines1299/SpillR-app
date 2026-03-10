@@ -6,12 +6,15 @@ import NavigationBar from "./navigationBar";
 const Home = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>SpillR</Text>
-      <Text style={{ marginTop: 10 }}>Trending</Text>
+      <View style={styles.content}>
+        <Text style={styles.title}>SpillR</Text>
+        <Text style={{ marginTop: 10 }}>Trending</Text>
 
-      <View style={styles.card}>
-        <Text>CARD!!!</Text>
+        <View style={styles.card}>
+          <Text>CARD!!!</Text>
+        </View>
       </View>
+
       <NavigationBar />
     </View>
   );
@@ -21,6 +24,9 @@ export default Home;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  content: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
@@ -35,8 +41,5 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 5,
     boxShadow: "4px 4px rgba(0,0,0,0.1)",
-  },
-  logo: {
-    resizeMode: "contain",
   },
 });

@@ -6,7 +6,9 @@ import NavigationBar from "./navigationBar";
 const SearchPage = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Search</Text>
+      <View style={styles.content}>
+        <Text style={styles.title}>Search</Text>
+      </View>
       <NavigationBar />
     </View>
   );
@@ -16,6 +18,9 @@ export default SearchPage;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+  },
+  content: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",

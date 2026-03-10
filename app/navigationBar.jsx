@@ -1,21 +1,25 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
 import { Link } from "expo-router";
+import homeIcon from "../assets/home.png";
+import searchIcon from "../assets/search-normal.png";
+import userIcon from "../assets/user.png";
+import notificationIcon from "../assets/notification-status.png";
 
 const NavigationBar = () => {
   return (
-    <View style={styles.container}>
+    <View style={styles.navBar}>
       <Link href="/" style={{ marginTop: 10 }}>
-        Home
+        <Image source={homeIcon} style={styles.icon} />
       </Link>
       <Link href="/searchPage" style={{ marginTop: 10 }}>
-        Search
+        <Image source={searchIcon} style={styles.icon} />
       </Link>
       <Link href="/userPage" style={{ marginTop: 10 }}>
-        User
+        <Image source={userIcon} style={styles.icon} />
       </Link>
       <Link href="/notificationsPage" style={{ marginTop: 10 }}>
-        Notifications
+        <Image source={notificationIcon} style={styles.icon} />
       </Link>
     </View>
   );
@@ -24,13 +28,21 @@ const NavigationBar = () => {
 export default NavigationBar;
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  navBar: {
+    flexDirection: "row",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "space-around",
+    backgroundColor: "#484848ff",
+    paddingVertical: 10,
+    paddingHorizontal: 8,
+    borderTopWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -3 },
+    shadowOpacity: 0.06,
+    shadowRadius: 8,
   },
-  title: {
-    fontWeight: "bold",
-    fontSize: 18,
+  icon: {
+    width: 28,
+    height: 28,
   },
 });
