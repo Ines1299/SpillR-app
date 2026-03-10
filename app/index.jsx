@@ -1,14 +1,18 @@
 import React from "react";
 import { StyleSheet, Text, View, Image } from "react-native";
+import { Link } from "expo-router";
+import NavigationBar from "./navigationBar";
 
 const Home = () => {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>SpillR</Text>
       <Text style={{ marginTop: 10 }}>Trending</Text>
+
       <View style={styles.card}>
         <Text>CARD!!!</Text>
       </View>
+      <NavigationBar />
     </View>
   );
 };
@@ -31,5 +35,8 @@ const styles = StyleSheet.create({
     padding: 20,
     borderRadius: 5,
     boxShadow: "4px 4px rgba(0,0,0,0.1)",
+  },
+  logo: {
+    resizeMode: "contain",
   },
 });
