@@ -6,7 +6,7 @@ import searchIcon from "../../assets/search-normal.png";
 import userIcon from "../../assets/user.png";
 import notificationIcon from "../../assets/notification-status.png";
 
-export default function TabLayout() {
+export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
@@ -29,7 +29,7 @@ export default function TabLayout() {
       />
 
       <Tabs.Screen
-        name="search"
+        name="searchpage"
         options={{
           headerShown: false,
           tabBarIcon: () => (
