@@ -9,7 +9,7 @@ export default function TrendingCard(props) {
     <Pressable
       onPress={() =>
         router.push({
-          pathname: "./tv-show/[id]",
+          pathname: "/tv-show/[id]",
           params: { id: show.tv_show_id },
         })
       }
