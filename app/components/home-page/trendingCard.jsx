@@ -1,9 +1,11 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Image } from "react-native";
 
-export default function TrendingCard() {
+export default function TrendingCard(props) {
+  const show = props.show;
   return (
     <View style={styles.card}>
-      <Text>Trending Post</Text>
+      <Image source={{ uri: show.tv_show_img_url }} style={styles.image} />
+      <Text>{show.name}</Text>
     </View>
   );
 }
@@ -16,4 +18,5 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginHorizontal: 6,
   },
+  image: { width: 120, height: 180, borderRadius: 6, marginBottom: 8 },
 });
