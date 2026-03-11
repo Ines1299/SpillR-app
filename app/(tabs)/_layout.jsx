@@ -22,8 +22,15 @@ export default function TabsLayout() {
         name="index"
         options={{
           headerShown: false,
-          tabBarIcon: () => (
-            <Image source={homeIcon} style={{ width: 28, height: 28 }} />
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={homeIcon}
+              style={{
+                width: 28,
+                height: 28,
+                tintColor: focused ? "#fff" : "#9CA3AF",
+              }}
+            />
           ),
         }}
       />
@@ -32,8 +39,15 @@ export default function TabsLayout() {
         name="searchpage"
         options={{
           headerShown: false,
-          tabBarIcon: () => (
-            <Image source={searchIcon} style={{ width: 28, height: 28 }} />
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={searchIcon}
+              style={{
+                width: 28,
+                height: 28,
+                tintColor: focused ? "#fff" : "#9CA3AF",
+              }}
+            />
           ),
         }}
       />
@@ -42,10 +56,14 @@ export default function TabsLayout() {
         name="notifications"
         options={{
           headerShown: false,
-          tabBarIcon: () => (
+          tabBarIcon: ({ focused }) => (
             <Image
               source={notificationIcon}
-              style={{ width: 28, height: 28 }}
+              style={{
+                width: 28,
+                height: 28,
+                tintColor: focused ? "#fff" : "#9CA3AF",
+              }}
             />
           ),
         }}
@@ -55,7 +73,7 @@ export default function TabsLayout() {
         name="user"
         options={{
           headerShown: false,
-          tabBarIcon: () => (
+          tabBarIcon: ({ focused }) => (
             <Image
               source={userIcon}
               style={{
@@ -64,6 +82,7 @@ export default function TabsLayout() {
                 borderWidth: 2,
                 borderColor: "white",
                 borderRadius: 12,
+                tintColor: focused ? "#fff" : "#9CA3AF",
               }}
             />
           ),
