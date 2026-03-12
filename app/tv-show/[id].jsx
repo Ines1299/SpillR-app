@@ -1,4 +1,11 @@
-import { View, Text, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+} from "react-native";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import { getTvShowById } from "../../utils/utilsFunctions";
@@ -35,18 +42,25 @@ export default function TvShowPage() {
   if (!show) return <Text>Loading...</Text>;
 
   return (
-    <>
-      <Stack.Screen options={{ title: show?.name }} />
-      <View style={styles.container}>
-        <Text style={styles.title}>{show.name}</Text>
-        <View style={styles.paragraph}>
-          <Text style={styles.description}>{show.description}</Text>
-          <Image source={{ uri: show.tv_show_img_url }} style={styles.image} />
-          <Dropdown name={show.name} />
+    <SafeAreaView style={styles.safeArea}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <Stack.Screen options={{ title: show?.name }} />
+        <View style={styles.container}>
+          <Text style={styles.title}>{show.name}</Text>
+          <View style={styles.paragraph}>
+            <Text style={styles.description}>{show.description}</Text>
+            <Image
+              source={{ uri: show.tv_show_img_url }}
+              style={styles.image}
+            />
+            <Dropdown name={show.name} />
+          </View>
         </View>
-        <Dropdown />
-      </View>
-    </>
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
