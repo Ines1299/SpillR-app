@@ -43,7 +43,6 @@ export default function TvShowPage() {
           <Image source={{ uri: show.tv_show_img_url }} style={styles.image} />
           <Dropdown name={show.name} />
         </View>
-        <Dropdown />
       </View>
     </>
   );
