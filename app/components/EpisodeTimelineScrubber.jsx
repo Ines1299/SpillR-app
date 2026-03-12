@@ -1,38 +1,57 @@
 import { useState } from "react";
-import { View, Text, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 
 export default function EpisodeTimelineScrubber() {
   const [currentSeconds, setCurrentSeconds] = useState(1200);
 
   const runtimeSeconds = 3600;
+  const roundedSeconds = Math.floor(currentSeconds);
+  let minutes = Math.floor(roundedSeconds / 60);
+  let seconds = Math.floor(roundedSeconds % 60);
+
   const trackWidth = 300;
   let currentWidth = (currentSeconds / runtimeSeconds) * trackWidth;
 
-  const handlePress = (event) => {
-    const x = event.nativeEvent.locationX;
-    const positionToSeconds = (x / trackWidth) * runtimeSeconds;
-    console.log(positionToSeconds);
-    setCurrentSeconds(positionToSeconds);
+  const confineAndConvertXPosition = (x) => {
+    let limitedX = x;
+
+    if (limitedX < 0) {
+      limitedX = 0;
+    }
+
+    if (limitedX > trackWidth) {
+      limitedX = trackWidth;
+    }
+
+    const seconds = (limitedX / trackWidth) * runtimeSeconds;
+
+    setCurrentSeconds(seconds);
   };
 
-  let minutes = Math.floor(currentSeconds / 60);
-  let seconds = Math.floor(currentSeconds % 60);
+  const handlePress = (event) => {
+    const x = event.nativeEvent.locationX;
+    confineAndConvertXPosition(x);
+  };
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={handlePress}>
-        <View style={styles.greyTrackBar}>
-          <View
-            style={[
-              styles.currentPosition,
-              { transform: [{ translateX: currentWidth - 5 }] },
-            ]}
-          ></View>
-          <View
-            style={[styles.purpleProgressBar, { width: currentWidth }]}
-          ></View>
-        </View>
-      </Pressable>
+      <View
+        style={styles.greyTrackBar}
+        onStartShouldSetResponder={() => true} //  key for draggin (not just pressing)
+        onMoveShouldSetResponder={() => true}
+        onResponderGrant={handlePress}
+        onResponderMove={handlePress}
+      >
+        <View
+          style={[
+            styles.currentPosition,
+            { transform: [{ translateX: currentWidth - 5 }] },
+          ]}
+        ></View>
+        <View
+          style={[styles.purpleProgressBar, { width: currentWidth }]}
+        ></View>
+      </View>
       <Text
         style={[
           styles.timeDisplay,
@@ -47,10 +66,12 @@ const styles = StyleSheet.create({
   greyTrackBar: {
     height: 15,
     width: 300,
+    borderRadius: 5,
     backgroundColor: "grey",
   },
   purpleProgressBar: {
     height: 15,
+    borderRadius: 5,
     backgroundColor: "purple",
   },
   currentPosition: {
