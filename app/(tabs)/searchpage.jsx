@@ -73,6 +73,7 @@ export default function Search() {
               />
             ) : null
           }
+          showsVerticalScrollIndicator={false}
         />
       </TouchableWithoutFeedback>
     </SafeAreaView>
