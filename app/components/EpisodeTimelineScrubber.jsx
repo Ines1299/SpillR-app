@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 
 export default function EpisodeTimelineScrubber() {
   const [currentSeconds, setCurrentSeconds] = useState(1200);
@@ -15,20 +15,31 @@ export default function EpisodeTimelineScrubber() {
     setCurrentSeconds(positionToSeconds);
   };
 
+  let minutes = Math.floor(currentSeconds / 60);
+  let seconds = Math.floor(currentSeconds % 60);
+
   return (
-    <Pressable onPress={handlePress}>
-      <View style={styles.greyTrackBar}>
-        <View
-          style={[
-            styles.currentPosition,
-            { transform: [{ translateX: currentWidth - 5 }] },
-          ]}
-        ></View>
-        <View
-          style={[styles.purpleProgressBar, { width: currentWidth }]}
-        ></View>
-      </View>
-    </Pressable>
+    <View style={styles.container}>
+      <Pressable onPress={handlePress}>
+        <View style={styles.greyTrackBar}>
+          <View
+            style={[
+              styles.currentPosition,
+              { transform: [{ translateX: currentWidth - 5 }] },
+            ]}
+          ></View>
+          <View
+            style={[styles.purpleProgressBar, { width: currentWidth }]}
+          ></View>
+        </View>
+      </Pressable>
+      <Text
+        style={[
+          styles.timeDisplay,
+          { transform: [{ translateX: currentWidth - 25 }] },
+        ]}
+      >{`${minutes}:${seconds < 10 ? "0" + seconds : seconds}`}</Text>
+    </View>
   );
 }
 
@@ -49,5 +60,11 @@ const styles = StyleSheet.create({
     borderRadius: 100,
     backgroundColor: "white",
     zIndex: 1,
+  },
+  timeDisplay: {
+    marginTop: 5,
+    color: "black",
+    width: 50,
+    textAlign: "center",
   },
 });
