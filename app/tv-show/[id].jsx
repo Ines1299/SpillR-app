@@ -3,6 +3,7 @@ import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import { getTvShowById } from "../../utils/utilsFunctions";
 import Dropdown from "../components/Dropdown";
+import EpisodesList from "../components/EpisodesList";
 import { Stack } from "expo-router";
 
 export default function TvShowPage() {
@@ -18,9 +19,9 @@ export default function TvShowPage() {
       navigation.setOptions({
         title: data.name,
         headerStyle: {
-          backgroundColor: "#484848", // match your tab bar color
+          backgroundColor: "#484848",
         },
-        headerTintColor: "#fff", // back arrow + title color
+        headerTintColor: "#fff",
         headerTitleStyle: {
           fontWeight: "bold",
         },
@@ -41,6 +42,7 @@ export default function TvShowPage() {
           <Text style={styles.description}>{show.description}</Text>
           <Image source={{ uri: show.tv_show_img_url }} style={styles.image} />
         </View>
+        <Dropdown />
       </View>
     </>
   );
