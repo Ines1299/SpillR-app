@@ -2,6 +2,7 @@ import { View, Text, Image, StyleSheet } from "react-native";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import { getTvShowById } from "../../utils/utilsFunctions";
+import Dropdown from "../components/Dropdown";
 import { Stack } from "expo-router";
 
 export default function TvShowPage() {
@@ -32,6 +33,14 @@ export default function TvShowPage() {
   if (!show) return <Text>Loading...</Text>;
 
   return (
+    <View style={styles.container}>
+      <Text style={styles.title}>{show.name}</Text>
+      <View style={styles.paragraph}>
+        <Text style={styles.description}>{show.description}</Text>
+        <Image source={{ uri: show.tv_show_img_url }} style={styles.image} />
+        <Dropdown name={show.name} />
+      </View>
+    </View>
     <>
       <Stack.Screen options={{ title: show?.name }} />
       <View style={styles.container}>
