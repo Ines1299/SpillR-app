@@ -3,7 +3,7 @@ import { getSeasonsAndEpisodesByShowName } from "../../utils/utilsFunctions";
 import { useState, useEffect } from "react";
 import { Image, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
-export default function Dropdown() {
+export default function Dropdown({ name }) {
   const [seasons, setSeasons] = useState([]); // add loading state (initially appears as Season undefined)
   const [selectedSeason, setSelectedSeason] = useState({});
   const [visible, setVisible] = useState(false);
@@ -13,7 +13,7 @@ export default function Dropdown() {
     async function loadSeasonsAndEpisodes() {
       try {
         setLoading(true);
-        const data = await getSeasonsAndEpisodesByShowName("hunted");
+        const data = await getSeasonsAndEpisodesByShowName(name);
         console.log(data);
         setSeasons(data.seasons);
         setSelectedSeason(data.seasons[0]);
