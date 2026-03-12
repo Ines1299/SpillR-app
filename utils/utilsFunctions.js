@@ -72,6 +72,18 @@ export async function getSeasonsAndEpisodesByShowName(showName) {
   };
 }
 
+export async function getEpisodeById(id) {
+  let { data, error } = await supabase
+    .from("episodes")
+    .select("*")
+    .eq("episode_id", id)
+    .single();
+  if (error) {
+    throw error;
+  }
+  return data;
+}
+
 export async function searchTvShowsByName(name) {
   let { data, error } = await supabase
     .from("tv_shows")
