@@ -4,8 +4,7 @@ import Dropdown from "../components/Dropdown";
 export default function Notifications() {
   return (
     <View style={styles.container}>
-      {/* <Text>Notifications Page</Text> */}
-      <Dropdown />
+      <Text>Notifications Page</Text>
     </View>
   );
 }

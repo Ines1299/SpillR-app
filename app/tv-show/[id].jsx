@@ -2,6 +2,7 @@ import { View, Text, Image, StyleSheet } from "react-native";
 import { useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
 import { getTvShowById } from "../../utils/utilsFunctions";
+import Dropdown from "../components/Dropdown";
 
 export default function TvShowPage() {
   const { id } = useLocalSearchParams();
@@ -24,6 +25,7 @@ export default function TvShowPage() {
       <View style={styles.paragraph}>
         <Text style={styles.description}>{show.description}</Text>
         <Image source={{ uri: show.tv_show_img_url }} style={styles.image} />
+        <Dropdown name={show.name} />
       </View>
     </View>
   );
