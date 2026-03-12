@@ -4,35 +4,46 @@ import { useState, useEffect } from "react";
 import { Image, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 export default function Dropdown() {
-  const [seasons, setSeasons] = useState([{}]); // add loading state (initially appears as Season undefined)
+  const [seasons, setSeasons] = useState([]); // add loading state (initially appears as Season undefined)
+  const [selectedSeason, setSelectedSeason] = useState({});
   const [visible, setVisible] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    setLoading(true);
-    async function getSeasonsAndEpisodes() {
-      const data = await getSeasonsAndEpisodesByShowName("taskmaster");
-      console.log(data);
-      setSeasons(data.seasons);
-      if (data) {
+    async function loadSeasonsAndEpisodes() {
+      try {
+        setLoading(true);
+        const data = await getSeasonsAndEpisodesByShowName("hunted");
+        console.log(data);
+        setSeasons(data.seasons);
+        setSelectedSeason(data.seasons[0]);
+      } catch (error) {
+        console.log("Error loading seasons:", error);
+      } finally {
         setLoading(false);
       }
     }
 
-    getSeasonsAndEpisodes();
+    loadSeasonsAndEpisodes();
   }, []);
 
   const toggleDropdown = () => {
     setVisible(!visible);
   };
 
+  const handleSelectSeason = (season) => {
+    setSelectedSeason(season);
+    setVisible(false);
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.button} onPress={toggleDropdown}>
         <Text style={styles.buttonText}>
-          {loading ? "..." : `Season ${seasons[0].season_number}`}
+          {loading
+            ? "Loading seasons..."
+            : `Season ${selectedSeason.season_number}`}
         </Text>
-
         <Image
           style={styles.dropdownArrow}
           source={require("../../assets/dropdown_arrow.png")}
@@ -42,9 +53,13 @@ export default function Dropdown() {
       {visible && (
         <View style={styles.dropdown}>
           {seasons.map((season) => (
-            <Text key={season.season_id} style={styles.dropdownItem}>
-              Season {season.season_number}
-            </Text>
+            <TouchableOpacity
+              key={season.season_id}
+              style={styles.dropdownItem}
+              onPress={() => handleSelectSeason(season)}
+            >
+              <Text>Season {season.season_number}</Text>
+            </TouchableOpacity>
           ))}
         </View>
       )}
