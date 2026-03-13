@@ -12,9 +12,11 @@ import { getEpisodeById } from "../../utils/utilsFunctions";
 import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import { Stack } from "expo-router";
 import { cleanText } from "../../utils/cleanText";
+import PollsList from "../components/tv-show-chat/PollsList";
 
 export default function LiveChatPage() {
   const { id, showName } = useLocalSearchParams();
+  console.log(showName);
 
   //   const navigation = useNavigation();
   const [episode, setEpisode] = useState(null);
@@ -26,17 +28,6 @@ export default function LiveChatPage() {
       const data = await getEpisodeById(id);
       setEpisode(data);
       setEpisodeRuntime(data.runtime_total);
-
-      //   navigation.setOptions({
-      //     title: `Episode ${data.episode_number}`,
-      //     headerStyle: {
-      //       backgroundColor: "#484848",
-      //     },
-      //     headerTintColor: "#fff",
-      //     headerTitleStyle: {
-      //       fontWeight: "bold",
-      //     },
-      //   });
     }
 
     loadEpisode();
@@ -67,7 +58,8 @@ export default function LiveChatPage() {
           }}
         />
         <View style={styles.container}>
-          <Text style={styles.title}>{episode.episode_number}</Text>
+          <Text style={styles.showName}>{showName}</Text>
+          <Text style={styles.title}>episode: {episode.episode_number}</Text>
           <View style={styles.timelineContainer}>
             <EpisodeTimelineScrubber
               setIsScrubbing={setIsScrubbing}
@@ -76,6 +68,9 @@ export default function LiveChatPage() {
           </View>
           <View style={styles.paragraph}>
             <Text style={styles.description}>{synopsis}</Text>
+          </View>
+          <View styles={{ height: 220 }}>
+            <PollsList />
           </View>
         </View>
       </ScrollView>
@@ -88,7 +83,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: 30,
+    fontSize: 24,
     marginBottom: 20,
   },
   paragraph: {
@@ -112,5 +107,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 15,
     marginVertical: 15,
+  },
+  showName: {
+    fontSize: 30,
   },
 });

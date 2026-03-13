@@ -13,7 +13,6 @@ export default function Header() {
 
 const styles = StyleSheet.create({
   title: {
-    color: "white",
     fontSize: 24,
     fontWeight: "bold",
     textAlign: "center",

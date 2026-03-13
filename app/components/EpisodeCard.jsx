@@ -1,7 +1,7 @@
 import { View, StyleSheet, Text, Image, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 
-export default function EpisodeCard({ episode, selectedSeason }) {
+export default function EpisodeCard({ episode, selectedSeason, showName }) {
   const router = useRouter();
   return (
     <Pressable
@@ -9,7 +9,7 @@ export default function EpisodeCard({ episode, selectedSeason }) {
         router.push({
           pathname: `/episode-live-chat/${episode.episode_id}`,
           params: {
-            showName: selectedSeason.show_name,
+            showName: showName,
           },
         })
       }
