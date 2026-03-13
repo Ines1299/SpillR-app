@@ -15,7 +15,7 @@ import PollsList from "../components/tv-show-chat/PollsList";
 import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import Comments from "../components/home-page/comments";
 import { globalStyles } from "../../styles/globalStyles";
-import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
+
 import Comments from "../components/home-page/comments";
 
 export default function LiveChatPage() {
