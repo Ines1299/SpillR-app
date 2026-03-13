@@ -78,7 +78,7 @@ export default function LiveChatPage() {
           </View>
         </View>
 
-        <CommentList currentSeconds={currentSeconds} episode_id={3129601} />
+        <CommentList currentSeconds={currentSeconds} episode_id={id} />
       </ScrollView>
     </SafeAreaView>
   );
