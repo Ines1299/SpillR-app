@@ -12,9 +12,9 @@ export default function Header() {
 }
 
 const styles = StyleSheet.create({
-  // title: {
-  //   fontSize: 24,
-  //   fontWeight: "bold",
-  //   textAlign: "center",
-  // },
+  title: {
+    fontSize: 24,
+    fontWeight: "bold",
+    textAlign: "center",
+  },
 });
