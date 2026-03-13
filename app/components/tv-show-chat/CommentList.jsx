@@ -4,7 +4,7 @@ import { getCommentsByEpisodeId } from "../../../utils/utilsFunctionsByApi.js";
 import { useState, useEffect } from "react";
 
 export default function CommentList(props) {
-  const [comments, setComments] = useState(null);
+  const [comments, setComments] = useState([]);
   const { episode_id, currentSeconds } = props;
   useEffect(() => {
     if (!episode_id) return;
