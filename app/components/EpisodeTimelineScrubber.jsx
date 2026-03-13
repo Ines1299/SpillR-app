@@ -1,14 +1,35 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
-import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import Entypo from "@expo/vector-icons/Entypo";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 export default function EpisodeTimelineScrubber({
   episodeRuntime,
   setIsScrubbing,
 }) {
   const [currentSeconds, setCurrentSeconds] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [episodeFinished, setEpisodeFinished] = useState(false);
 
   const runtimeSeconds = episodeRuntime * 60;
+
+  useEffect(() => {
+    if (isPlaying && !episodeFinished) {
+      const id = setInterval(() => {
+        setCurrentSeconds((prev) => {
+          const next = prev + 1;
+          if (next >= runtimeSeconds) {
+            setEpisodeFinished(true);
+            return prev;
+          }
+          return next;
+        });
+      }, 1000);
+
+      return () => clearInterval(id);
+    }
+  }, [isPlaying, episodeFinished]);
+
   const roundedSeconds = Math.floor(currentSeconds);
   let minutes = Math.floor(roundedSeconds / 60);
   let seconds = Math.floor(roundedSeconds % 60);
@@ -37,7 +58,11 @@ export default function EpisodeTimelineScrubber({
     confineAndConvertXPosition(x);
   };
 
-  const leftOffset = 28;
+  const handlePressPlayPause = () => {
+    setIsPlaying(!isPlaying);
+  };
+
+  const leftOffset = 32;
 
   return (
     <View>
@@ -48,9 +73,16 @@ export default function EpisodeTimelineScrubber({
         ]}
       >{`${minutes}:${seconds < 10 ? "0" + seconds : seconds}`}</Text>
       <View style={styles.buttonAndBarContainer}>
-        <View style={styles.buttonContainer}>
-          <FontAwesome6 name="circle-play" style={styles.playOrPauseButton} />
-        </View>
+        <Pressable
+          style={styles.buttonContainer}
+          onPress={handlePressPlayPause}
+        >
+          {isPlaying ? (
+            <AntDesign name="pause" style={styles.playOrPauseButton} />
+          ) : (
+            <Entypo name="controller-play" style={styles.playOrPauseButton} />
+          )}
+        </Pressable>
         <View
           style={styles.greyTrackBar}
           onStartShouldSetResponder={() => true} //  key for draggin (not just pressing)
@@ -82,11 +114,12 @@ const styles = StyleSheet.create({
   buttonAndBarContainer: {
     flexDirection: "row",
     alignItems: "center",
+    marginRight: 15,
   },
   buttonContainer: {
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 8,
+    marginRight: 12,
   },
   playOrPauseButton: {
     fontSize: 20,
