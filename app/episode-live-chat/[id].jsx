@@ -108,5 +108,6 @@ const styles = StyleSheet.create({
   timelineContainer: {
     alignItems: "center",
     marginHorizontal: 15,
+    marginVertical: 15,
   },
 });
