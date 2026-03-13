@@ -13,7 +13,7 @@ import { Stack } from "expo-router";
 import { cleanText } from "../../utils/cleanText";
 import PollsList from "../components/tv-show-chat/PollsList";
 import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
-import Comments from "../components/home-page/comments";
+import CommentList from "../components/tv-show-chat/CommentList";
 import { globalStyles } from "../../styles/globalStyles";
 
 export default function LiveChatPage() {
@@ -23,6 +23,7 @@ export default function LiveChatPage() {
   const [episode, setEpisode] = useState(null);
   const [episodeRuntime, setEpisodeRuntime] = useState(60);
   const [isScrubbing, setIsScrubbing] = useState(false);
+  const [currentSeconds, setCurrentSeconds] = useState(0);
 
   useEffect(() => {
     async function loadEpisode() {
@@ -63,6 +64,8 @@ export default function LiveChatPage() {
           <Text style={styles.title}>Episode: {episode.episode_number}</Text>
           <View style={styles.timelineContainer}>
             <EpisodeTimelineScrubber
+              currentSeconds={currentSeconds}
+              setCurrentSeconds={setCurrentSeconds}
               setIsScrubbing={setIsScrubbing}
               episodeRuntime={episodeRuntime}
             />
@@ -74,9 +77,9 @@ export default function LiveChatPage() {
             <PollsList />
           </View>
         </View>
-      </ScrollView>
 
-      <Comments episode_id={id} />
+        <CommentList currentSeconds={currentSeconds} episode_id={id} />
+      </ScrollView>
     </SafeAreaView>
   );
 }
