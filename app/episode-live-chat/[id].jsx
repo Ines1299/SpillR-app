@@ -15,6 +15,8 @@ import PollsList from "../components/tv-show-chat/PollsList";
 import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import Comments from "../components/comments";
 import { globalStyles } from "../../styles/globalStyles";
+import { LinearGradient } from "expo-linear-gradient";
+import { ImageBackground } from "react-native";
 
 export default function LiveChatPage() {
   const { id, showName, seasonNumber } = useLocalSearchParams();
@@ -40,10 +42,10 @@ export default function LiveChatPage() {
   const synopsis = cleanText(episode.synopsis);
 
   return (
-    <View style={[globalStyles.container, { flex: 1, paddingHorizontal: 5 }]}>
+    <View style={[globalStyles.container, { flex: 1, paddingHorizontal: 0 }]}>
       <ScrollView
         scrollEnabled={!isScrubbing}
-        contentContainerStyle={{ paddingTop: 70, paddingBottom: 0 }}
+        contentContainerStyle={{ paddingTop: 2, paddingBottom: 0 }}
         showsVerticalScrollIndicator={false}
       >
         <Stack.Screen
@@ -58,16 +60,34 @@ export default function LiveChatPage() {
           }}
         />
         <View style={styles.container}>
-          <Text style={styles.showName}>{showName}</Text>
-          <Text style={styles.title}>
-            S{seasonNumber} Ep: {episode.episode_number}
-          </Text>
-          <View style={styles.timelineContainer}>
-            <EpisodeTimelineScrubber
-              setIsScrubbing={setIsScrubbing}
-              episodeRuntime={episodeRuntime}
-            />
-          </View>
+          <ImageBackground
+            source={{ uri: episode.episode_url }}
+            style={styles.heroImage}
+          >
+            <LinearGradient
+              colors={[
+                "rgba(102,102,102,0)",
+                "rgba(16,16,16,0.90)",
+                "rgba(16,16,16,1)",
+              ]}
+              locations={[0.01, 0.7, 1]}
+              style={styles.heroOverlay}
+            >
+              <Text style={styles.showName}>{showName}</Text>
+              <Text style={styles.title}>
+                S{seasonNumber} Ep:{" "}
+                {!episode.episode_number
+                  ? "Season special"
+                  : episode.episode_number}
+              </Text>
+              <View style={styles.timelineContainer}>
+                <EpisodeTimelineScrubber
+                  setIsScrubbing={setIsScrubbing}
+                  episodeRuntime={episodeRuntime}
+                />
+              </View>
+            </LinearGradient>
+          </ImageBackground>
           <View style={styles.paragraph}>
             <Text
               style={styles.description}
@@ -94,6 +114,18 @@ export default function LiveChatPage() {
 }
 
 const styles = StyleSheet.create({
+  heroImage: {
+    width: "100%",
+    height: 280,
+    overflow: "hidden",
+  },
+  heroOverlay: {
+    position: "absolute",
+    bottom: 0,
+    left: 0,
+    right: 0,
+    paddingBottom: 16,
+  },
   readMore: {
     color: "#FFFFFF",
     fontSize: 13,
@@ -126,7 +158,7 @@ const styles = StyleSheet.create({
   },
 
   description: {
-    flex: 1, // takes up remaining horizontal space
+    flex: 1,
     flexWrap: "wrap",
     color: "white",
   },
