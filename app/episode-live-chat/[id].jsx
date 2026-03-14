@@ -87,7 +87,7 @@ export default function LiveChatPage() {
           </View>
         </View>
 
-        <Comments episode_id={3129600} />
+        <Comments episode_id={episode.episode_id} isChat={true} />
       </ScrollView>
     </View>
   );
