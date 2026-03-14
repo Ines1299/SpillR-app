@@ -90,7 +90,11 @@ export default function LiveChatPage() {
           </View>
         </View>
 
-        <CommentList currentSeconds={currentSeconds} episode_id={id} />
+        <Comments
+          currentSeconds={currentSeconds}
+          episode_id={episode.episode_id}
+          isChat={true}
+        />
       </ScrollView>
     </View>
   );

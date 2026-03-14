@@ -12,6 +12,12 @@ import { globalStyles } from "../../../styles/globalStyles";
 export default function SubLi() {
   const showArr = [
     {
+      tv_show_id: 82386,
+      name: "EastEnders Revealed",
+      tv_show_img_url:
+        "https://static.tvmaze.com/uploads/images/original_untouched/554/1385631.jpg",
+    },
+    {
       tv_show_id: 3508,
       name: "Gogglebox",
       tv_show_img_url:

@@ -17,6 +17,9 @@ export default function CommentCard(props) {
     tv_show_name,
     episode_number,
     season_number,
+    runtime_seconds,
+    isChat,
+    isLive,
   } = props;
   const [username, setUserName] = useState(null);
   const [userurl, setUserurl] = useState(null);
@@ -25,16 +28,29 @@ export default function CommentCard(props) {
     created_at ? timeAgo(created_at) : "",
   );
 
+  const formatRuntime = (seconds) => {
+    if (!seconds) return "";
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${String(s).padStart(2, "0")}`;
+  };
+
   const actionMap = {
     comment: "commented on:",
     reply: "replied in: ",
     reaction: "reacted in: ",
   };
 
+  let islive = "";
+  if (isLive) {
+    islive = "live";
+  }
+  islive = "replay";
+
   const actor = username === loggedInUser.username ? "you" : `@${username}`;
   const meta = type
     ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number}`
-    : null;
+    : `posted in ${islive}`;
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -57,7 +73,9 @@ export default function CommentCard(props) {
         <View style={commentStyles.commentContent}>
           <View style={commentStyles.commentTopRow}>
             <Text style={commentStyles.commentUser}>@{username}</Text>
-            <Text style={commentStyles.commentTime}>{relativeTime}</Text>
+            <Text style={commentStyles.commentTime}>
+              {isChat ? formatRuntime(runtime_seconds) : relativeTime}
+            </Text>
           </View>
           <Text style={commentStyles.commentMeta}>{meta}</Text>
           <Text style={commentStyles.commentText}>{body}</Text>

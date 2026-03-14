@@ -6,7 +6,7 @@ import { commentStyles } from "../../styles/commentStyles";
 
 export default function Comments(props) {
   const [comments, setComments] = useState(null);
-  const { episode_id, isHome, userComments } = props;
+  const { episode_id, isHome, userComments, isChat } = props;
   useEffect(() => {
     if (!episode_id) {
       if (userComments) setComments(userComments);
@@ -29,9 +29,11 @@ export default function Comments(props) {
           return (
             <View key={comment.comment_id}>
               <CommentCard
+                isChat={isChat}
                 user_id={comment.user_id}
                 body={comment.body}
                 created_at={comment.created_at}
+                runtime_seconds={comment.runtime_seconds}
                 season_number={comment.season_number}
                 episode_number={comment.episode_number}
                 tv_show_name={comment.tv_show_name}
