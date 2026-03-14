@@ -20,7 +20,7 @@ export default function UserPage() {
     {
       comment_id: 1,
       user_id: loggedInUser.user_id,
-      body: "Why would you volunteer that you've been with 5 girls in a night willingly? No gun to your head",
+      body: "Exactly, why would you volunteer that you've been with 5 girls in a night willingly? No gun to your head",
       created_at: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
       reply_id: "r1",
       tv_show_name: "Love Island",
@@ -30,7 +30,7 @@ export default function UserPage() {
     {
       comment_id: 2,
       user_id: loggedInUser.user_id,
-      body: "I am crying because she was wrong from the start and still so confident about it",
+      reaction_type: "laughing",
       created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
       reaction_id: "re1",
       tv_show_name: "Traitors",

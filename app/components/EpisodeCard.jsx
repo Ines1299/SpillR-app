@@ -34,7 +34,9 @@ export default function EpisodeCard({
           />
           <Text
             style={styles.episodeInfo}
-          >{`Season ${selectedSeason.season_number}, Episode ${episode.episode_number}`}</Text>
+          >{`Season ${selectedSeason.season_number}, Episode ${
+            !episode.episode_number ? "special" : episode.episode_number
+          }`}</Text>
         </View>
       </View>
     </Pressable>

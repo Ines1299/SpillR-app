@@ -1,5 +1,12 @@
 import { useState, useEffect } from "react";
-import { Image, View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Image,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import EpisodesList from "./EpisodesList";
 
 export default function Dropdown({ name, seasons, tv_show_img_url }) {
@@ -49,7 +56,12 @@ export default function Dropdown({ name, seasons, tv_show_img_url }) {
       </TouchableOpacity>
 
       {visible && (
-        <View style={styles.dropdown}>
+        <ScrollView
+          style={styles.dropdown}
+          nestedScrollEnabled={true}
+          contentContainerStyle={{ paddingTop: 2, paddingBottom: 0 }}
+          showsVerticalScrollIndicator={false}
+        >
           {seasons.map((season) => (
             <TouchableOpacity
               key={season.season_id}
@@ -61,7 +73,7 @@ export default function Dropdown({ name, seasons, tv_show_img_url }) {
               </Text>
             </TouchableOpacity>
           ))}
-        </View>
+        </ScrollView>
       )}
 
       <EpisodesList
@@ -109,7 +121,7 @@ const styles = StyleSheet.create({
   dropdown: {
     position: "absolute",
     width: "30%",
-    top: 45, //button height
+    top: 45,
     left: 0,
     right: 0,
     marginLeft: 8,
@@ -119,6 +131,7 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     zIndex: 1000,
     elevation: 5,
+    maxHeight: 350,
   },
 
   dropdownItem: {

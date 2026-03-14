@@ -96,8 +96,12 @@ export default function TvShowPage() {
             )}
 
             <LinearGradient
-              colors={["transparent", "rgba(0,0,0,0.7)"]}
-              locations={[0.1, 1]}
+              colors={[
+                "rgba(16,16,16,0)",
+                "rgba(16,16,16,0.6)",
+                "rgba(16,16,16,1)",
+              ]}
+              locations={[0, 0.5, 1]}
               style={styles.overlay}
             >
               <Text style={styles.title}>{show.name}</Text>

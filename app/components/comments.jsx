@@ -3,6 +3,7 @@ import CommentCard from "./commentCard";
 import { getCommentsByEpisodeId } from "../../utils/utilsFunctionsByApi.js";
 import { useState, useEffect } from "react";
 import { commentStyles } from "../../styles/commentStyles";
+import emojiLookup from "../../utils/emojiLookupObject.js";
 
 export default function Comments(props) {
   const [comments, setComments] = useState(null);
@@ -30,8 +31,13 @@ export default function Comments(props) {
             <View key={comment.comment_id}>
               <CommentCard
                 isChat={isChat}
+                isLive={comment.is_live}
                 user_id={comment.user_id}
-                body={comment.body}
+                body={
+                  comment.body
+                    ? comment.body
+                    : emojiLookup(comment.reaction_type)
+                }
                 created_at={comment.created_at}
                 runtime_seconds={comment.runtime_seconds}
                 season_number={comment.season_number}
@@ -56,9 +62,10 @@ export default function Comments(props) {
 
 const styles = StyleSheet.create({
   noComments: {
-    marginTop: 20,
-    color: "white",
+    color: "#8E8E8E",
+    fontWeight: 700,
   },
+
   scrollArea: {
     flex: 1,
     backgroundColor: "#232222",
