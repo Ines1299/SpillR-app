@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
+import { Dimensions } from "react-native";
+
+const screenWidth = Dimensions.get("window").width;
 
 export default function EpisodeTimelineScrubber({
   episodeRuntime,
@@ -34,7 +37,7 @@ export default function EpisodeTimelineScrubber({
   const roundedSeconds = Math.floor(currentSeconds);
   let minutes = Math.floor(roundedSeconds / 60);
   let seconds = Math.floor(roundedSeconds % 60);
-
+  const screenWidth = Dimensions.get("window").width;
   const trackWidth = 300;
   let currentWidth = (currentSeconds / runtimeSeconds) * trackWidth;
 
@@ -63,7 +66,7 @@ export default function EpisodeTimelineScrubber({
     setIsPlaying(!isPlaying);
   };
 
-  const leftOffset = 32;
+  const leftOffset = 0;
 
   return (
     <View>
@@ -74,16 +77,6 @@ export default function EpisodeTimelineScrubber({
         ]}
       >{`${minutes}:${seconds < 10 ? "0" + seconds : seconds}`}</Text>
       <View style={styles.buttonAndBarContainer}>
-        <Pressable
-          style={styles.buttonContainer}
-          onPress={handlePressPlayPause}
-        >
-          {isPlaying ? (
-            <AntDesign name="pause" style={styles.playOrPauseButton} />
-          ) : (
-            <Entypo name="controller-play" style={styles.playOrPauseButton} />
-          )}
-        </Pressable>
         <View
           style={styles.greyTrackBar}
           onStartShouldSetResponder={() => true} //  key for draggin (not just pressing)
@@ -106,6 +99,16 @@ export default function EpisodeTimelineScrubber({
             style={[styles.purpleProgressBar, { width: currentWidth }]}
           ></View>
         </View>
+        <Pressable
+          style={styles.buttonContainer}
+          onPress={handlePressPlayPause}
+        >
+          {isPlaying ? (
+            <AntDesign name="pause" style={styles.playOrPauseButton} />
+          ) : (
+            <Entypo name="controller-play" style={styles.playOrPauseButton} />
+          )}
+        </Pressable>
       </View>
     </View>
   );
@@ -113,9 +116,9 @@ export default function EpisodeTimelineScrubber({
 
 const styles = StyleSheet.create({
   buttonAndBarContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 15,
+    flexDirection: "column",
+    alignItems: "flex-start",
+    marginLeft: 0,
   },
   buttonContainer: {
     justifyContent: "center",
@@ -124,11 +127,12 @@ const styles = StyleSheet.create({
   },
   playOrPauseButton: {
     fontSize: 20,
+    paddingTop: 10,
     color: "white",
   },
   greyTrackBar: {
     height: 8,
-    width: 300,
+    width: screenWidth - 65,
     borderRadius: 5,
     backgroundColor: "#c4c4c4ac",
   },
@@ -146,6 +150,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   timeDisplay: {
+    marginBottom: 8,
     marginTop: 5,
     color: "white",
     width: 50,

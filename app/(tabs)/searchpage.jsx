@@ -52,7 +52,9 @@ export default function Search() {
           }
           ListFooterComponent={
             <View style={{ marginTop: 20 }}>
-              <TitleText style={globalStyles.title}>People liked</TitleText>
+              <TitleText style={globalStyles.title}>
+                People also liked
+              </TitleText>
               <Trending />
             </View>
           }
