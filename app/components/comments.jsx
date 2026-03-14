@@ -1,7 +1,8 @@
 import { ScrollView, View, Text, StyleSheet } from "react-native";
 import CommentCard from "./commentCard";
-import { getCommentsByEpisodeId } from "../../../utils/utilsFunctionsByApi.js";
+import { getCommentsByEpisodeId } from "../../utils/utilsFunctionsByApi.js";
 import { useState, useEffect } from "react";
+import { commentStyles } from "../../styles/commentStyles";
 
 export default function Comments(props) {
   const [comments, setComments] = useState(null);
@@ -16,7 +17,7 @@ export default function Comments(props) {
   }, [episode_id]);
   return (
     <ScrollView
-      style={styles.commentsBox}
+      style={commentStyles.commentsBox}
       nestedScrollEnabled
       showsVerticalScrollIndicator={false}
     >
@@ -34,13 +35,20 @@ export default function Comments(props) {
           );
         })
       ) : (
-        <Text>No comments yet</Text>
+        <Text style={styles.noComments}>
+          No reactions at this timestamp yet, keep playing to see more... or be
+          the first?
+        </Text>
       )}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
+  noComments: {
+    marginTop: 20,
+    color: "white",
+  },
   scrollArea: {
     flex: 1,
     backgroundColor: "#232222",

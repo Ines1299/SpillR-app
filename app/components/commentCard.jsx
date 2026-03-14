@@ -1,35 +1,46 @@
 import { Image, View, Text, StyleSheet } from "react-native";
-import { getUserById } from "../../../utils/utilsFunctions.js";
+import { getUserById } from "../../utils/utilsFunctions.js";
 import { useState, useEffect } from "react";
+import { commentStyles } from "../../styles/commentStyles";
 // import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { timeAgo } from "../../utils/CleanTime.js";
 
+//comment flow for a single comment card, complete with how long ago it was
+// posted relative to now, who posted it and a space for other meta data like where it was posted
 export default function CommentCard(props) {
   const { body, user_id, created_at } = props;
   const [username, setUserName] = useState(null);
   const [userurl, setUserurl] = useState(null);
-  const [commentTime, setCommentTime] = useState(null);
+  const [relativeTime, setRelativeTime] = useState(
+    created_at ? timeAgo(created_at) : "",
+  );
+
   useEffect(() => {
     const fetchUser = async () => {
       if (!user_id) return;
       const result = await getUserById(user_id);
-      console.log(result);
+
+      if (!result) return;
+
       setUserName(result.username);
       setUserurl(result.avatar_url);
-      setCommentTime(created_at);
+      setRelativeTime(timeAgo(created_at));
     };
     fetchUser();
   }, [user_id]);
   return (
-    <View style={styles.commentRow}>
-      <Image style={styles.commentAvatar} source={{ uri: userurl }} />
-      <View style={styles.commentTopRow}>
-        <Text style={styles.commentUser}>@{username}</Text>
-        <Text style={styles.commentTime}>{commentTime}</Text>
+    <View>
+      <View style={commentStyles.commentRow}>
+        <Image style={commentStyles.commentAvatar} source={{ uri: userurl }} />
+        <View style={commentStyles.commentContent}>
+          <View style={commentStyles.commentTopRow}>
+            <Text style={commentStyles.commentUser}>@{username}</Text>
+            <Text style={commentStyles.commentTime}>{relativeTime}</Text>
+          </View>
+          <Text style={commentStyles.commentMeta}>{null}</Text>
+          <Text style={commentStyles.commentText}>{body}</Text>
+        </View>
       </View>
-      <Text style={styles.commentMeta}>
-        you replied to @jazzmine1256 Love Island S4:
-      </Text>
-      <Text style={styles.commentText}>{body}</Text>
     </View>
   );
 }
@@ -137,57 +148,5 @@ const styles = StyleSheet.create({
     width: 185,
     height: 140,
     borderRadius: 14,
-  },
-  commentsBox: {
-    height: 230,
-    marginHorizontal: 15,
-    paddingHorizontal: 10,
-    paddingVertical: 8,
-  },
-  commentRow: {
-    flexDirection: "row",
-    alignItems: "flex-start",
-    marginBottom: 14,
-  },
-  commentAvatar: {
-    width: 42,
-    height: 42,
-    borderRadius: 21,
-    marginRight: 10,
-    marginTop: 2,
-  },
-  commentContent: {
-    flex: 1,
-  },
-  commentTopRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  commentUser: {
-    color: "white",
-    fontSize: 13,
-    fontWeight: "600",
-  },
-  commentTime: {
-    color: "#8E8E8E",
-    fontSize: 12,
-  },
-  commentMeta: {
-    color: "#8E8E8E",
-    fontSize: 12,
-    marginTop: 2,
-    marginBottom: 4,
-  },
-  commentText: {
-    color: "white",
-    fontSize: 14,
-    lineHeight: 20,
-    paddingRight: 8,
-  },
-  divider: {
-    height: 1,
-    backgroundColor: "#3a3a3a",
-    marginVertical: 10,
   },
 });

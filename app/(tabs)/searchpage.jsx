@@ -52,8 +52,8 @@ export default function Search() {
           }
           ListFooterComponent={
             <View style={{ marginTop: 20 }}>
-              <TitleText>Trending Shows</TitleText>
-              <Trending horizontal={false} />
+              <TitleText style={globalStyles.title}>People liked</TitleText>
+              <Trending />
             </View>
           }
           contentContainerStyle={{ paddingTop: 20, paddingBottom: 100 }}
