@@ -84,18 +84,87 @@ export async function getEpisodeById(id) {
   return data;
 }
 
-export async function searchTvShowsByName(name) {
-  let { data, error } = await supabase
-    .from("tv_shows")
-    .select("*")
-    .ilike("name", `%${name}%`)
-    .limit(20);
+// export async function searchTvShowsByName(name) {
+//   try {
+//     const { data: localData, error: localError } = await supabase
+//       .from("tv_shows")
+//       .select("*")
+//       .ilike("name", `%${name}%`)
+//       .limit(20);
 
-  if (error) {
-    throw error;
+//     if (localError) {
+//       throw localError;
+//     }
+//     if (localData && localData.length > 0) return localData;
+
+//     const externalResponse = await fetch(
+//       "https://spillr-be.onrender.com/api/tv-shows",
+//       {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify({ show_name: name }),
+//       },
+//     );
+
+//     if (!externalResponse.ok) {
+//       console.error("External API error:", externalResponse.statusText);
+//       return "not found";
+//     }
+
+//     const externalData = await externalResponse.json();
+
+//     if (externalData && externalData.length > 0) return externalData;
+
+//     return "not found";
+//   } catch (error) {
+//     console.error("Search failed:", error);
+//     return "not found";
+//   }
+// }
+
+export async function searchLocalTvShows(name) {
+  try {
+    const { data, error } = await supabase
+      .from("tv_shows")
+      .select("*")
+      .ilike("name", `%${name}%`)
+      .limit(20);
+
+    if (error) throw error;
+
+    return data || [];
+  } catch (error) {
+    console.error("Local search failed:", error);
+    return [];
   }
+}
 
-  return data;
+export async function searchExternalTvShows(name) {
+  try {
+    const response = await fetch(
+      "https://spillr-be.onrender.com/api/tv-shows",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ show_name: name }),
+      },
+    );
+
+    if (!response.ok) {
+      console.error("External API error:", response.statusText);
+      return [];
+    }
+    const data = await response.json();
+
+    return Array.isArray(data) && data.length > 0 ? data : [];
+  } catch (error) {
+    console.error("External API failed:", error);
+    return [];
+  }
 }
 
 export async function getUserById(userId) {
