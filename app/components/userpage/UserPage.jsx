@@ -26,6 +26,15 @@ export default function UserPage() {
       tv_show_name: "Love Island",
       season_number: 4,
       episode_number: 3,
+      reactions_total: 100,
+      reactionType_total: {
+        angryTotal: 10,
+        laughingTotal: 40,
+        sadTotal: 5,
+        fireTotal: 20,
+        deadTotal: 15,
+        heartTotal: 10,
+      },
     },
     {
       comment_id: 2,
@@ -45,8 +54,19 @@ export default function UserPage() {
       tv_show_name: "Geordie Shore",
       season_number: 12,
       episode_number: 1,
+      repliesTotal: 12,
+      reactions_total: 120,
+      reactionType_total: {
+        angryTotal: 70,
+        laughingTotal: 6,
+        sadTotal: 10,
+        fireTotal: 7,
+        deadTotal: 9,
+        heartTotal: 20,
+      },
     },
   ];
+
   for (let i = 0; i < userComments.length; i++) {
     let type = "";
     const obj = userComments[i];
