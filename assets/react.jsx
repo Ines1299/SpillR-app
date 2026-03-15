@@ -5,6 +5,7 @@ const Reaction = (props) => (
     xmlns="http://www.w3.org/2000/svg"
     width={21}
     height={21}
+    viewBox="-1 -1 23 23"
     fill="none"
     {...props}
   >

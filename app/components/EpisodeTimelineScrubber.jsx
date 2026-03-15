@@ -17,6 +17,13 @@ export default function EpisodeTimelineScrubber({
 
   const runtimeSeconds = episodeRuntime * 60;
 
+  const formatRuntime = (seconds) => {
+    if (!seconds) return "";
+    const m = Math.floor(seconds / 60);
+    const s = seconds % 60;
+    return `${m}:${String(s).padStart(2, "0")}`;
+  };
+
   useEffect(() => {
     if (isPlaying && !episodeFinished) {
       const id = setInterval(() => {
@@ -71,16 +78,18 @@ export default function EpisodeTimelineScrubber({
 
   return (
     <View>
-      <Text
-        style={[
-          styles.timeDisplay,
-          { transform: [{ translateX: leftOffset + currentWidth - 25 }] },
-        ]}
-      >{`${minutes}:${seconds < 10 ? "0" + seconds : seconds}`}</Text>
+      <View>
+        <Text
+          style={[
+            styles.timeDisplay,
+            { transform: [{ translateX: leftOffset + currentWidth - 25 }] },
+          ]}
+        >{`${minutes}:${seconds < 10 ? "0" + seconds : seconds}`}</Text>
+      </View>
       <View style={styles.buttonAndBarContainer}>
         <View
           style={styles.greyTrackBar}
-          onStartShouldSetResponder={() => true} //  key for draggin (not just pressing)
+          onStartShouldSetResponder={() => true}
           onMoveShouldSetResponder={() => true}
           onResponderGrant={() => {
             setIsScrubbing(true);
@@ -95,21 +104,25 @@ export default function EpisodeTimelineScrubber({
               styles.currentPosition,
               { transform: [{ translateX: currentWidth - 5 }] },
             ]}
-          ></View>
-          <View
-            style={[styles.purpleProgressBar, { width: currentWidth }]}
-          ></View>
+          />
+          <View style={[styles.purpleProgressBar, { width: currentWidth }]} />
         </View>
-        <Pressable
-          style={styles.buttonContainer}
-          onPress={handlePressPlayPause}
-        >
-          {isPlaying ? (
-            <AntDesign name="pause" style={styles.playOrPauseButton} />
-          ) : (
-            <Entypo name="controller-play" style={styles.playOrPauseButton} />
-          )}
-        </Pressable>
+
+        <View style={styles.controlsRow}>
+          <Pressable
+            style={styles.buttonContainer}
+            onPress={handlePressPlayPause}
+          >
+            {isPlaying ? (
+              <AntDesign name="pause" style={styles.playOrPauseButton} />
+            ) : (
+              <Entypo name="controller-play" style={styles.playOrPauseButton} />
+            )}
+          </Pressable>
+          <Text style={styles.runtimeDisplay}>
+            {formatRuntime(runtimeSeconds)}
+          </Text>
+        </View>
       </View>
     </View>
   );
@@ -119,7 +132,12 @@ const styles = StyleSheet.create({
   buttonAndBarContainer: {
     flexDirection: "column",
     alignItems: "flex-start",
-    marginLeft: 0,
+  },
+  controlsRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    width: screenWidth - 65,
   },
   buttonContainer: {
     justifyContent: "center",
@@ -153,6 +171,13 @@ const styles = StyleSheet.create({
   timeDisplay: {
     marginBottom: 8,
     marginTop: 5,
+    color: "white",
+    width: 50,
+    textAlign: "center",
+  },
+  runtimeDisplay: {
+    marginBottom: 8,
+    marginTop: 8,
     color: "white",
     width: 50,
     textAlign: "center",

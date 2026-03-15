@@ -4,6 +4,7 @@ export default function emojiLookup(string) {
     angry: "😡",
     laughing: "😂",
     sad: "😢",
+    crying: "😢",
     fire: "🔥",
     dead: "💀",
     heart: "🩷",
