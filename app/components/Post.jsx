@@ -4,12 +4,16 @@ import {
   Text,
   StyleSheet,
   TextInput,
+  Image,
   TouchableOpacity,
 } from "react-native";
 import { useState, useEffect } from "react";
 import Send from "../../assets/send-button.jsx";
+import { useContext } from "react";
+import { UserContext } from "../context/User";
 
 const Post = ({ comment_id, episode_id }) => {
+  const { loggedInUser } = useContext(UserContext);
   const [input, setInput] = useState("");
 
   const handleSubmit = () => {
@@ -18,6 +22,7 @@ const Post = ({ comment_id, episode_id }) => {
   };
   return (
     <View style={styles.container}>
+      <Image style={styles.avatar} source={{ uri: loggedInUser.avatar_url }} />
       <View style={styles.inputWrapper}>
         <TextInput
           placeholder="What's happening?"
@@ -36,11 +41,23 @@ const Post = ({ comment_id, episode_id }) => {
 
 const styles = StyleSheet.create({
   container: {
+    paddingLeft: 2,
     marginTop: 20,
     paddingVertical: 10,
+    paddingHorizontal: 16,
     backgroundColor: "#101010",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+  },
+  avatar: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    marginLeft: -16,
   },
   inputWrapper: {
+    flex: 1,
     position: "relative",
     justifyContent: "center",
   },
