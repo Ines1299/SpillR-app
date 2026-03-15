@@ -108,7 +108,7 @@ export default function CommentCard(props) {
             onPress={() => setShowEmojiPicker(!showEmojiPicker)}
           >
             <Text style={styles.iconCount}>{reactions_total}</Text>
-            <Reaction width={20} height={20} />
+            <Reaction width={22} height={22} />
           </TouchableOpacity>
 
           {!isReply && (

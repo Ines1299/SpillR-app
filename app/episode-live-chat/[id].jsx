@@ -73,13 +73,13 @@ export default function LiveChatPage() {
               locations={[0.01, 0.7, 1]}
               style={styles.heroOverlay}
             >
-              <Text style={styles.showName}>{showName}</Text>
               <Text style={styles.title}>
                 S{seasonNumber} Ep:{" "}
                 {!episode.episode_number
                   ? "Season special"
                   : episode.episode_number}
               </Text>
+              <Text style={styles.showName}>{showName}</Text>
               <View style={styles.timelineContainer}>
                 <EpisodeTimelineScrubber
                   setIsScrubbing={setIsScrubbing}
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 16,
-    marginBottom: 10,
+    marginBottom: 0,
     marginLeft: 20,
     color: "white",
   },
@@ -169,7 +169,7 @@ const styles = StyleSheet.create({
   },
   showName: {
     fontSize: 30,
-    marginTop: 20,
+    marginTop: 0,
     marginLeft: 20,
     fontWeight: "bold",
     color: "white",
