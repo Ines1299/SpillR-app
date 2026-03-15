@@ -1,15 +1,22 @@
-import { Image, View, Text, StyleSheet } from "react-native";
+import { Image, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { getUserById } from "../../utils/utilsFunctions.js";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../context/User";
 import { commentStyles } from "../../styles/commentStyles";
 // import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { timeAgo } from "../../utils/CleanTime.js";
+import Replies from "../../assets/comment";
+import Delete from "../../assets/delete";
+import Reaction from "../../assets/react";
+import SpoilerFlag from "../../assets/SpoilerFlag.jsx";
+import RepliesList from "./RepliesList";
+import EmojiPicker from "./EmojiPicker.jsx";
 
 //comment flow for a single comment card, complete with how long ago it was
 // posted relative to now, who posted it and a space for other meta data like where it was posted
 export default function CommentCard(props) {
   const {
+    comment_id,
     body,
     user_id,
     created_at,
@@ -20,6 +27,11 @@ export default function CommentCard(props) {
     runtime_seconds,
     isChat,
     isLive,
+    reactions_total,
+    reactionType_total,
+    repliesTotal,
+    isReaction,
+    isReply,
   } = props;
   const [username, setUserName] = useState(null);
   const [userurl, setUserurl] = useState(null);
@@ -27,6 +39,18 @@ export default function CommentCard(props) {
   const [relativeTime, setRelativeTime] = useState(
     created_at ? timeAgo(created_at) : "",
   );
+  const [showReplies, setShowReplies] = useState(false);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
+  const handleToggleReplies = () => {
+    if (!isChat) return;
+    setShowReplies(!showReplies);
+  };
+
+  const handleReaction = (reactionType) => {
+    console.log("reacted with:", reactionType);
+    setShowEmojiPicker(false);
+  };
 
   const formatRuntime = (seconds) => {
     if (!seconds) return "";
@@ -41,11 +65,7 @@ export default function CommentCard(props) {
     reaction: "reacted in: ",
   };
 
-  let islive = "";
-  if (isLive) {
-    islive = "live";
-  }
-  islive = "replay";
+  const islive = isLive ? "live" : "replay";
 
   const actor = username === loggedInUser.username ? "you" : `@${username}`;
   const meta = type
@@ -81,11 +101,82 @@ export default function CommentCard(props) {
           <Text style={commentStyles.commentText}>{body}</Text>
         </View>
       </View>
+      {!isReaction && (
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            style={styles.iconGroup}
+            onPress={() => setShowEmojiPicker(!showEmojiPicker)}
+          >
+            <Text style={styles.iconCount}>{reactions_total}</Text>
+            <Reaction width={20} height={20} />
+          </TouchableOpacity>
+
+          {!isReply && (
+            <>
+              <TouchableOpacity
+                style={styles.iconGroup}
+                onPress={handleToggleReplies}
+              >
+                <Text style={styles.iconCount}>{repliesTotal}</Text>
+                <Replies width={22} height={22} />
+              </TouchableOpacity>
+              {user_id === loggedInUser.user_id ? (
+                <TouchableOpacity style={styles.iconGroup}>
+                  <Delete width={22} height={22} />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity style={styles.iconGroup}>
+                  <SpoilerFlag width={22} height={22} />
+                </TouchableOpacity>
+              )}
+            </>
+          )}
+        </View>
+      )}
+
+      {showEmojiPicker && (
+        <EmojiPicker
+          reactionType_total={reactionType_total}
+          onSelect={handleReaction}
+        />
+      )}
+
+      {showReplies && (
+        <>
+          <View style={styles.threadLine} />
+          <RepliesList comment_id={comment_id} />
+        </>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  threadLine: {
+    position: "absolute",
+    left: 20,
+    top: 40, // adjust to start just below avatar centre
+    bottom: 0,
+    width: 1,
+    backgroundColor: "#2a2a2a",
+    zIndex: -1, // sits behind everything so it never blocks touches
+  },
+  iconGroup: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
+  },
+  iconCount: {
+    fontSize: 12,
+    color: "#8E8E8E",
+  },
+  buttonRow: {
+    flexDirection: "row",
+    gap: 15,
+    paddingRight: 10,
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
   scrollArea: {
     flex: 1,
     backgroundColor: "#232222",

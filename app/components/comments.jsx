@@ -39,12 +39,19 @@ export default function Comments(props) {
                     : emojiLookup(comment.reaction_type)
                 }
                 created_at={comment.created_at}
+                comment_id={comment.comment_id}
                 runtime_seconds={comment.runtime_seconds}
                 season_number={comment.season_number}
                 episode_number={comment.episode_number}
                 tv_show_name={comment.tv_show_name}
                 type={comment.Commenttype}
+                reactions_total={comment.reactions_total}
+                repliesTotal={comment.repliesTotal}
+                isReaction={comment.reaction_id}
+                isReply={comment.reply_id}
+                reactionType_total={comment.reactionType_total}
               />
+
               <View style={styles.divider} />
             </View>
           );

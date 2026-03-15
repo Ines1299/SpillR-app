@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   purpleProgressBar: {
     height: 8,
     borderRadius: 5,
-    backgroundColor: "#9D00FF",
+    backgroundColor: "#E500FF",
   },
   currentPosition: {
     position: "absolute",
