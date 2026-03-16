@@ -9,11 +9,14 @@ const trackWidth = screenWidth - 65;
 
 export default function EpisodeTimelineScrubber({
   episodeRuntime,
+  scrubFinished,
+  setScrubFinished,
   setIsScrubbing,
   currentSeconds,
   setCurrentSeconds,
+  isPlaying,
+  setIsPlaying,
 }) {
-  const [isPlaying, setIsPlaying] = useState(false);
   const [episodeFinished, setEpisodeFinished] = useState(false);
 
   const runtimeSeconds = episodeRuntime * 60;
@@ -50,7 +53,7 @@ export default function EpisodeTimelineScrubber({
   let currentWidth = (currentSeconds / runtimeSeconds) * trackWidth;
 
   const confineAndConvertXPosition = (x) => {
-    let limitedX = x;
+    let limitedX = Math.max(0, Math.min(x, trackWidth));
 
     if (limitedX < 0) {
       limitedX = 0;
@@ -96,8 +99,14 @@ export default function EpisodeTimelineScrubber({
             handlePress;
           }}
           onResponderMove={handlePress}
-          onResponderRelease={() => setIsScrubbing(false)}
-          onResponderTerminate={() => setIsScrubbing(false)}
+          onResponderRelease={() => {
+            setIsScrubbing(false);
+            setScrubFinished(true);
+          }}
+          onResponderTerminate={() => {
+            setIsScrubbing(false);
+            setScrubFinished(true);
+          }}
         >
           <View
             style={[

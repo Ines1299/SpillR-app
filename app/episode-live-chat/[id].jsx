@@ -25,8 +25,10 @@ export default function LiveChatPage() {
   const [episode, setEpisode] = useState(null);
   const [episodeRuntime, setEpisodeRuntime] = useState(60);
   const [isScrubbing, setIsScrubbing] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
   const [expanded, setExpanded] = useState(false);
   const [currentSeconds, setCurrentSeconds] = useState(0);
+  const [scrubFinished, setScrubFinished] = useState(false);
 
   useEffect(() => {
     async function loadEpisode() {
@@ -83,10 +85,14 @@ export default function LiveChatPage() {
               <Text style={styles.showName}>{showName}</Text>
               <View style={styles.timelineContainer}>
                 <EpisodeTimelineScrubber
+                  setScrubFinished={setScrubFinished}
+                  episodeRuntime={episodeRuntime}
                   currentSeconds={currentSeconds}
                   setCurrentSeconds={setCurrentSeconds}
+                  isPlaying={isPlaying}
+                  setIsPlaying={setIsPlaying}
+                  isScrubbing={isScrubbing}
                   setIsScrubbing={setIsScrubbing}
-                  episodeRuntime={episodeRuntime}
                 />
               </View>
             </LinearGradient>
@@ -111,9 +117,14 @@ export default function LiveChatPage() {
         </View>
 
         <Comments
+          setScrubFinished={setScrubFinished}
+          scrubFinished={scrubFinished}
           currentSeconds={currentSeconds}
           episode_id={episode.episode_id}
           isChat={true}
+          isPlaying={isPlaying}
+          isScrubbing={isScrubbing}
+          isHome={false}
         />
       </ScrollView>
     </View>

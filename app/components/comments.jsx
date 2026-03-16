@@ -1,72 +1,134 @@
 import { ScrollView, View, Text, StyleSheet } from "react-native";
 import CommentCard from "./commentCard";
-import { getCommentsByEpisodeId } from "../../utils/utilsFunctionsByApi.js";
-import { useState, useEffect } from "react";
+import {
+  getCommentsByEpisodeId,
+  getFilteredCommentsByEpisodeId,
+} from "../../utils/utilsFunctionsByApi.js";
+import { useState, useEffect, useRef } from "react";
 import { commentStyles } from "../../styles/commentStyles";
 import emojiLookup from "../../utils/emojiLookupObject.js";
 
+const SPOILER_DELAY = 30;
+
 export default function Comments(props) {
+  const {
+    setScrubFinished,
+    scrubFinished,
+    currentSeconds,
+    episode_id,
+    isHome,
+    userComments,
+    isChat,
+    isPlaying,
+    isScrubbing,
+  } = props;
+
   const [comments, setComments] = useState([]);
-  const { currentSeconds, episode_id, isHome, userComments, isChat } = props;
+  const currentSecondsRef = useRef(currentSeconds);
+
+  // Keep ref in sync so the polling interval always reads the latest value
+  // without needing currentSeconds as a dependency on the interval effect
   useEffect(() => {
-    if (!episode_id) {
-      if (userComments) {
-        setComments(userComments);
-        console.log(userComments);
+    currentSecondsRef.current = currentSeconds;
+  }, [currentSeconds]);
+
+  // ─── Effect 1: isHome ───────────────────────────────────────────────────────
+  // Not in isChat mode — just reflect the passed-in userComments array directly
+  useEffect(() => {
+    if (!isHome) {
+      return;
+    } else {
+      setComments(userComments);
+    }
+  }, [isHome, userComments]);
+
+  // ─── Effect 2: t = 0 and not playing ───────────────────────────────────────
+  // Video is at the start and not playing — fetch ALL comments for the episode
+  useEffect(() => {
+    if (isHome || !episode_id) {
+      return;
+    } else {
+      if (currentSeconds === 0 && !isPlaying) {
+        const fetchAllComments = async () => {
+          const result = await getCommentsByEpisodeId(episode_id);
+          setComments(result);
+        };
+        fetchAllComments();
       }
     }
-    const fetchComments = async (id) => {
-      const results = await getCommentsByEpisodeId(id);
-      setComments(results);
-    };
-    fetchComments(episode_id);
-  }, [episode_id]);
+  }, [currentSeconds, isPlaying, episode_id, isHome]);
 
-  const filteredCommentsByRuntimeRange =
-    isHome && userComments
-      ? comments
-      : comments.filter(
-          (comment) =>
-            comment.runtime_seconds >= currentSeconds - 1200 &&
-            comment.runtime_seconds <= currentSeconds,
-        );
+  // ─── Effect 3: scrubbing ────────────────────────────────────────────────────
+  // User is scrubbing (regardless of play state) — immediate replace fetch
+  // whenever isScrubbing is true or debouncedSeconds settles on a new value
+  useEffect(() => {
+    if (!scrubFinished || isHome || !episode_id) return;
+    if (currentSecondsRef.current === 0 && !isPlaying) return;
+
+    const safeSeconds = Math.floor(currentSecondsRef.current);
+    getFilteredCommentsByEpisodeId(episode_id, safeSeconds).then((result) => {
+      setComments(result);
+      setScrubFinished(false); // reset so it can fire again next scrub
+    });
+  }, [scrubFinished]);
+  // ─── Effect 4: 30-second polling while playing ──────────────────────────────
+  // Only runs when playing and not scrubbing — merges new comments in
+  useEffect(() => {
+    if (isHome || !episode_id) return;
+    if (!isPlaying || isScrubbing) return;
+
+    setComments([]);
+
+    const interval = setInterval(async () => {
+      const safeSeconds = Math.floor(
+        Math.max(0, currentSecondsRef.current - SPOILER_DELAY),
+      );
+      const results = await getFilteredCommentsByEpisodeId(
+        episode_id,
+        safeSeconds,
+      );
+      setComments((prev) => {
+        const existingIds = new Set(prev.map((c) => c.comment_id));
+        const incoming = results.filter((c) => !existingIds.has(c.comment_id));
+        return [...incoming, ...prev];
+      });
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [isPlaying, isScrubbing, episode_id, isHome]);
+
   return (
     <ScrollView
       style={commentStyles.commentsBox}
       nestedScrollEnabled
       showsVerticalScrollIndicator={false}
     >
-      {filteredCommentsByRuntimeRange?.length > 0 ? (
-        filteredCommentsByRuntimeRange.map((comment) => {
-          return (
-            <View key={comment.comment_id}>
-              <CommentCard
-                isChat={isChat}
-                isLive={comment.is_live}
-                user_id={comment.user_id}
-                body={
-                  comment.body
-                    ? comment.body
-                    : emojiLookup(comment.reaction_type)
-                }
-                created_at={comment.created_at}
-                comment_id={comment.comment_id}
-                runtime_seconds={comment.runtime_seconds}
-                season_number={comment.season_number}
-                episode_number={comment.episode_number}
-                tv_show_name={comment.tv_show_name}
-                type={comment.Commenttype}
-                reactions_total={comment.reactions_total}
-                repliesTotal={comment.repliesTotal}
-                isReaction={comment.reaction_id}
-                isReply={comment.reply_id}
-                reactionType_total={comment.reactionType_total}
-              />
-
-              <View style={styles.divider} />
-            </View>
-          );
-        })
+      {comments?.length > 0 ? (
+        comments.map((comment) => (
+          <View key={comment.comment_id}>
+            <CommentCard
+              isChat={isChat}
+              isLive={comment.is_live}
+              user_id={comment.user_id}
+              body={
+                comment.body ? comment.body : emojiLookup(comment.reaction_type)
+              }
+              created_at={comment.created_at}
+              comment_id={comment.comment_id}
+              runtime_seconds={comment.runtime_seconds}
+              season_number={comment.season_number}
+              episode_number={comment.episode_number}
+              tv_show_name={comment.tv_show_name}
+              type={comment.Commenttype}
+              reactions_total={comment.reactions_total}
+              repliesTotal={comment.repliesTotal}
+              isReaction={comment.reaction_id}
+              isReply={comment.reply_id}
+              reactionType_total={comment.reactionType_total}
+            />
+            <View style={styles.divider} />
+          </View>
+        ))
       ) : (
         <Text style={styles.noComments}>
           {isHome
