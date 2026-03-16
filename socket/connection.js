@@ -2,7 +2,7 @@ import { io } from "socket.io-client";
 
 const socket = io("https://spillr-be.onrender.com/", {
   transports: ["websocket"],
-  autoConnect: false;
+  autoConnect: false,
 });
 
 export default socket;
