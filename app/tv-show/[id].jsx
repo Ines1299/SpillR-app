@@ -10,7 +10,6 @@ import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
 import { getTvShowById } from "../../utils/utilsFunctions";
 import Dropdown from "../components/Dropdown";
-import EpisodesList from "../components/EpisodesList";
 import { Stack } from "expo-router";
 import { cleanText } from "../../utils/cleanText";
 import { globalStyles } from "../../styles/globalStyles";
