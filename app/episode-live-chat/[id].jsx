@@ -19,6 +19,7 @@ import Comments from "../components/comments";
 import { globalStyles } from "../../styles/globalStyles";
 import socket from "../../socket/connection";
 import { EpisodeProvider } from "../context/Episode";
+import PostBox from "../components/PostBox.jsx";
 
 export default function LiveChatPage() {
   const { id, showName, seasonNumber } = useLocalSearchParams();
@@ -31,6 +32,7 @@ export default function LiveChatPage() {
   const [expanded, setExpanded] = useState(false);
   const [currentSeconds, setCurrentSeconds] = useState(0);
   const [scrubFinished, setScrubFinished] = useState(false);
+  const [showPost, setShowPost] = useState(false);
 
   useEffect(() => {
     async function loadEpisode() {
@@ -84,6 +86,19 @@ export default function LiveChatPage() {
             <ImageBackground
               source={{ uri: episode.episode_url }}
               style={styles.heroImage}
+        <View style={styles.container}>
+          <ImageBackground
+            source={{ uri: episode.episode_url }}
+            style={styles.heroImage}
+          >
+            <LinearGradient
+              colors={[
+                "rgba(102,102,102,0)",
+                "rgba(16,16,16,0.90)",
+                "rgba(16,16,16,1)",
+              ]}
+              locations={[0.01, 0.7, 1]}
+              style={styles.heroOverlay}
             >
               <LinearGradient
                 colors={[
@@ -146,11 +161,33 @@ export default function LiveChatPage() {
           />
         </EpisodeProvider>
       </ScrollView>
+      <View style={styles.fab}>
+        <FloatingButton
+          episodeId={episode.episode_id}
+          showPost={showPost}
+          setShowPost={setShowPost}
+        />
+      </View>
+      {showPost && <PostBox episode_id={id} style={styles.postBar} />}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  postBar: {
+    position: "absolute",
+    width: "80%",
+    bottom: 25,
+    left: 0,
+    right: 0,
+  },
+
+  fab: {
+    position: "absolute",
+    bottom: 32,
+    right: 24,
+    zIndex: 100,
+  },
   heroImage: {
     width: "100%",
     height: 280,

@@ -14,7 +14,7 @@ import { UserContext } from "../context/User";
 import { EpisodeContext } from "../context/Episode";
 import socket from "../../socket/connection.js";
 
-const Post = ({ comment_id, runtime_seconds }) => {
+const Post = ({ comment_id, runtime_seconds, style }) => {
   const { loggedInUser } = useContext(UserContext);
   const { episodeId } = useContext(EpisodeContext);
   const [input, setInput] = useState("");
@@ -75,7 +75,7 @@ const Post = ({ comment_id, runtime_seconds }) => {
   //-----------------------------------
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       <Image style={styles.avatar} source={{ uri: loggedInUser.avatar_url }} />
       <View style={styles.inputWrapper}>
         <TextInput

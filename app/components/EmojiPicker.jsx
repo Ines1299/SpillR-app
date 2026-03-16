@@ -1,11 +1,11 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 import emojiLookup from "../../utils/emojiLookupObject.js";
 
-const EmojiPicker = ({ reactionType_total, onSelect }) => {
+const EmojiPicker = ({ reactionType_total, onSelect, style }) => {
   const emojis = ["angry", "laughing", "sad", "fire", "dead", "heart"];
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, style]}>
       {emojis.map((emoji) => (
         <TouchableOpacity
           key={emoji}
@@ -13,9 +13,11 @@ const EmojiPicker = ({ reactionType_total, onSelect }) => {
           onPress={() => onSelect(emoji)}
         >
           <Text style={styles.emoji}>{emojiLookup(emoji)}</Text>
-          <Text style={styles.count}>
-            {reactionType_total[`${emoji}Total`]}
-          </Text>
+          {reactionType_total && (
+            <Text style={styles.count}>
+              {reactionType_total[`${emoji}Total`]}
+            </Text>
+          )}
         </TouchableOpacity>
       ))}
     </View>
@@ -35,10 +37,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     marginTop: 6,
     alignSelf: "flex-end",
+    width: 260,
+    flexWrap: "nowrap",
   },
   emojiOption: {
     alignItems: "center",
-    gap: 3,
+    justifyContent: "center",
+    height: 44,
     paddingHorizontal: 6,
   },
   emoji: {
@@ -47,6 +52,8 @@ const styles = StyleSheet.create({
   count: {
     fontSize: 10,
     color: "#8E8E8E",
+    height: 14,
+    textAlign: "center",
   },
 });
 
