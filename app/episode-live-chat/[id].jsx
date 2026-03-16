@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   postBar: {
     position: "absolute",
     width: "80%",
-    bottom: 25,
+    bottom: 35,
     left: 0,
     right: 0,
   },
