@@ -21,6 +21,7 @@ export default function Comments(props) {
   }, [episode_id]);
 
   const filteredCommentsByRuntimeRange = comments.filter(
+    // needs to be fetched later instead
     (comment) =>
       comment.runtime_seconds >= currentSeconds - 1200 &&
       comment.runtime_seconds <= currentSeconds,
