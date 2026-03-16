@@ -20,6 +20,8 @@ import { globalStyles } from "../../styles/globalStyles";
 import socket from "../../socket/connection";
 import { EpisodeProvider } from "../context/Episode";
 import PostBox from "../components/PostBox.jsx";
+import socket from "../../socket/connection";
+import { EpisodeProvider } from "../context/Episode";
 
 export default function LiveChatPage() {
   const { id, showName, seasonNumber } = useLocalSearchParams();
@@ -99,6 +101,14 @@ export default function LiveChatPage() {
               ]}
               locations={[0.01, 0.7, 1]}
               style={styles.heroOverlay}
+        <EpisodeProvider episodeId={episode.episode_id}>
+          <View style={styles.floating}>
+            <FloatingButton episodeId={episode.episode_id} />
+          </View>
+          <View style={styles.container}>
+            <ImageBackground
+              source={{ uri: episode.episode_url }}
+              style={styles.heroImage}
             >
               <LinearGradient
                 colors={[
