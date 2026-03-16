@@ -6,8 +6,8 @@ import { commentStyles } from "../../styles/commentStyles";
 import emojiLookup from "../../utils/emojiLookupObject.js";
 
 export default function Comments(props) {
-  const [comments, setComments] = useState(null);
-  const { episode_id, isHome, userComments, isChat } = props;
+  const [comments, setComments] = useState([]);
+  const { currentSeconds, episode_id, isHome, userComments, isChat } = props;
   useEffect(() => {
     if (!episode_id) {
       if (userComments) setComments(userComments);
@@ -19,14 +19,20 @@ export default function Comments(props) {
     };
     fetchComments(episode_id);
   }, [episode_id]);
+
+  const filteredCommentsByRuntimeRange = comments.filter(
+    (comment) =>
+      comment.runtime_seconds >= currentSeconds - 1200 &&
+      comment.runtime_seconds <= currentSeconds,
+  );
   return (
     <ScrollView
       style={commentStyles.commentsBox}
       nestedScrollEnabled
       showsVerticalScrollIndicator={false}
     >
-      {comments?.length > 0 ? (
-        comments.map((comment) => {
+      {filteredCommentsByRuntimeRange?.length > 0 ? (
+        filteredCommentsByRuntimeRange.map((comment) => {
           return (
             <View key={comment.comment_id}>
               <CommentCard

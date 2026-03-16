@@ -5,6 +5,7 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import { Dimensions } from "react-native";
 
 const screenWidth = Dimensions.get("window").width;
+const trackWidth = screenWidth - 65;
 
 export default function EpisodeTimelineScrubber({
   episodeRuntime,
@@ -45,8 +46,7 @@ export default function EpisodeTimelineScrubber({
   const roundedSeconds = Math.floor(currentSeconds);
   let minutes = Math.floor(roundedSeconds / 60);
   let seconds = Math.floor(roundedSeconds % 60);
-  const screenWidth = Dimensions.get("window").width;
-  const trackWidth = 300;
+
   let currentWidth = (currentSeconds / runtimeSeconds) * trackWidth;
 
   const confineAndConvertXPosition = (x) => {
