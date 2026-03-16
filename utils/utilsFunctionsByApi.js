@@ -22,3 +22,15 @@ export async function getFilteredCommentsByEpisodeId(id, t) {
     throw error;
   }
 }
+
+export async function getRepliesByCommentId(comment_id) {
+  console.log("fetching replies", comment_id);
+  try {
+    const { data } = await axios.get(
+      `https://spillr-be.onrender.com/api/comments/${comment_id}/replies`,
+    );
+    return data.replies;
+  } catch (error) {
+    throw error;
+  }
+}
