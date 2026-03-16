@@ -10,9 +10,9 @@ import {
 import { useState, useEffect } from "react";
 import Send from "../../assets/send-button.jsx";
 import { useContext } from "react";
-import { UserContext } from "../context/User";
+import { UserContext } from "../context/User.jsx";
 
-const Post = ({ comment_id, episode_id, style }) => {
+const PostBox = ({ comment_id, episode_id, style }) => {
   const { loggedInUser } = useContext(UserContext);
   const [input, setInput] = useState("");
 
@@ -41,10 +41,13 @@ const Post = ({ comment_id, episode_id, style }) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingLeft: 2,
+    borderRadius: 30,
+    paddingLeft: 16,
     marginTop: 20,
     paddingVertical: 10,
-    paddingHorizontal: 16,
+    paddingHorizontal: 10,
+    paddingTop: 15,
+    paddingBottom: 15,
     backgroundColor: "#101010",
     flexDirection: "row",
     alignItems: "center",
@@ -54,7 +57,7 @@ const styles = StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    marginLeft: -16,
+    marginLeft: 0,
   },
   inputWrapper: {
     flex: 1,
@@ -75,4 +78,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Post;
+export default PostBox;
