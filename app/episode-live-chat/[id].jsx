@@ -17,7 +17,8 @@ import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import FloatingButton from "../components/FloatingButton";
 import Comments from "../components/comments";
 import { globalStyles } from "../../styles/globalStyles";
-import PostBox from "../components/PostBox.jsx";
+import PostBox from "../components/PostComment.jsx";
+import PollInput from "../components/PollInput.jsx";
 import socket from "../../socket/connection";
 import { EpisodeProvider } from "../context/Episode";
 
@@ -33,7 +34,7 @@ export default function LiveChatPage() {
   const [currentSeconds, setCurrentSeconds] = useState(0);
   const [scrubFinished, setScrubFinished] = useState(false);
   const [showPost, setShowPost] = useState(false);
-
+  const [showPollInput, setShowPollInput] = useState(false);
   useEffect(() => {
     async function loadEpisode() {
       const data = await getEpisodeById(id);
@@ -51,7 +52,11 @@ export default function LiveChatPage() {
       console.log(`socket connected and joined room ${id}`);
     }
     return () => {
-      socket.disconnect();
+      if (socket.connected) {
+        socket.emit("room:leave", id);
+        console.log(`socket left room ${id}`);
+        socket.disconnect();
+      }
     };
   }, [isPlaying]);
 
@@ -150,9 +155,12 @@ export default function LiveChatPage() {
           episodeId={episode.episode_id}
           showPost={showPost}
           setShowPost={setShowPost}
+          showPollInput={showPollInput}
+          setShowPollInput={setShowPollInput}
         />
       </View>
       {showPost && <PostBox episode_id={id} style={styles.postBar} />}
+      {showPollInput && <PollInput episode_id={id} style={styles.postBar} />}
     </View>
   );
 }

@@ -7,8 +7,7 @@ import {
 import { useState, useEffect, useRef } from "react";
 import { commentStyles } from "../../styles/commentStyles";
 import emojiLookup from "../../utils/emojiLookupObject.js";
-
-const SPOILER_DELAY = 30;
+import socket from "../../socket/connection.js";
 
 export default function Comments(props) {
   const {
@@ -25,6 +24,28 @@ export default function Comments(props) {
 
   const [comments, setComments] = useState([]);
   const currentSecondsRef = useRef(currentSeconds);
+
+  useEffect(() => {
+    // missing piece to add websockets comments
+    const handleNewComment = (newComment) => {
+      if (String(newComment.episode_id) !== String(episode_id)) return;
+
+      setComments((prevComments) => {
+        const alreadyExists = prevComments.some(
+          (comment) => comment.comment_id === newComment.comment_id,
+        );
+
+        if (alreadyExists) return prevComments;
+
+        return [newComment, ...prevComments];
+      });
+    };
+    socket.on("comment:new", handleNewComment);
+
+    return () => {
+      socket.off("comment:new", handleNewComment);
+    };
+  }, [episode_id]);
 
   // Keep ref in sync so the polling interval always reads the latest value
   // without needing currentSeconds as a dependency on the interval effect
@@ -145,6 +166,8 @@ export default function Comments(props) {
     <ScrollView
       style={commentStyles.commentsBox}
       nestedScrollEnabled
+      keyboardShouldPersistTaps="handled"
+      contentContainerStyle={{ paddingBottom: 350 }}
       showsVerticalScrollIndicator={false}
     >
       {comments?.length > 0 ? (
@@ -294,7 +317,8 @@ const styles = StyleSheet.create({
     borderRadius: 14,
   },
   commentsBox: {
-    height: 230,
+    overflow: "visible",
+    flex: 1,
     marginHorizontal: 15,
     paddingHorizontal: 10,
     paddingVertical: 8,

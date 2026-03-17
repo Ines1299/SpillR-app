@@ -1,20 +1,20 @@
 import {
-    ScrollView,
-    View,
-    Text,
+    KeyboardAvoidingView,
+    Platform,
     StyleSheet,
     TextInput,
     Image,
+    View,
     TouchableOpacity,
 } from "react-native";
 import { useState, useEffect } from "react";
 import Send from "../../assets/send-button.jsx";
 import { useContext } from "react";
-import { UserContext } from "../context/User";
+import { UserContext } from "../context/User.jsx";
 import { EpisodeContext } from "../context/Episode";
 import socket from "../../socket/connection.js";
 
-const Post = ({ comment_id, runtime_seconds, style }) => {
+const PostBox = ({ comment_id, runtime_seconds = 1, style }) => {
     const { loggedInUser } = useContext(UserContext);
     const { episodeId } = useContext(EpisodeContext);
     const [input, setInput] = useState("");
@@ -26,34 +26,21 @@ const Post = ({ comment_id, runtime_seconds, style }) => {
         runtime_seconds: 1, //hardcoded for now
         is_spoiler: false,
     };
-
-    const reply = {
-        comment_id: comment_id,
-        episode_id: episodeId,
-        user_id: loggedInUser.user_id,
-        runtime_seconds: 1,
-        is_spoiler: false,
-        body: input,
-    };
-
     const handleSubmit = () => {
+        console.log(input);
         if (input) {
-            // console.log(input);
-            if (!comment_id) {
-                const newComment = { ...comment, body: input };
-                console.log("client sends comment:", newComment);
-                socket.emit("comment:post", newComment);
-            } else {
-                const newReply = { ...reply, body: input };
-                console.log("client sends reply:", newReply);
-                socket.emit("reply:post", newReply);
-            }
-            setInput("");
+            const newComment = { ...comment, body: input };
+            console.log("client sends comment:", newComment);
+            socket.emit("comment:post", newComment);
         }
+        setInput("");
     };
 
     return (
-        <View style={[styles.container, style]}>
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : "height"}
+            style={[styles.container, style]}
+        >
             <Image
                 style={styles.avatar}
                 source={{ uri: loggedInUser.avatar_url }}
@@ -73,26 +60,29 @@ const Post = ({ comment_id, runtime_seconds, style }) => {
                     <Send width={20} height={20} />
                 </TouchableOpacity>
             </View>
-        </View>
+        </KeyboardAvoidingView>
     );
 };
-
 const styles = StyleSheet.create({
     container: {
-        paddingLeft: 20,
+        borderRadius: 30,
+        paddingLeft: 16,
         marginTop: 20,
         paddingVertical: 10,
-        paddingHorizontal: 16,
-        backgroundColor: "#101010",
+        paddingHorizontal: 10,
+        paddingTop: 15,
+        paddingBottom: 15,
         flexDirection: "row",
         alignItems: "center",
-        gap: 10,
+        gap: 5,
     },
     avatar: {
-        width: 32,
-        height: 32,
-        borderRadius: 16,
-        marginLeft: -16,
+        width: 35,
+        height: 35,
+        borderWidth: 0.5,
+        borderColor: "#ffffff",
+        borderRadius: 20,
+        marginLeft: 0,
     },
     inputWrapper: {
         flex: 1,
@@ -113,4 +103,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default Post;
+export default PostBox;
