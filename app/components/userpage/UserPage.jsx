@@ -93,19 +93,15 @@ export default function UserPage() {
   ];
 
   for (let i = 0; i < userComments.length; i++) {
-    let type = "";
     const obj = userComments[i];
-    const keys = Object.keys(obj);
 
-    if (keys.includes("reply_id")) {
-      type = "reply";
-    } else if (keys.includes("reaction_id")) {
-      type = "reaction";
+    if (obj.reaction_id !== null) {
+      obj.Commenttype = "reaction";
+    } else if (obj.reply_id !== null) {
+      obj.Commenttype = "reply";
     } else {
-      type = "comment";
+      obj.Commenttype = "comment";
     }
-
-    obj.Commenttype = type;
   }
   const firstName = loggedInUser.name.split(" ")[0];
   return (

@@ -172,7 +172,7 @@ export default function Comments(props) {
       showsVerticalScrollIndicator={false}
     >
       {comments?.length > 0 ? (
-        comments.map((comment) => (
+        comments.map((comment, index) => (
           <View key={comment.comment_id}>
             <CommentCard
               isChat={isChat}
