@@ -158,9 +158,15 @@ export default function LiveChatPage() {
             setShowPollInput={setShowPollInput}
           />
         </View>
-        {showPost && <PostBox episode_id={id} style={styles.postBar} />}
+        {showPost && (
+          <PostBox
+            episode_id={id}
+            currentSecond={currentSeconds}
+            style={styles.postBar}
+          />
+        )}
         {showPollInput && <PollInput episode_id={id} style={styles.postBar} />}
-      </View>{" "}
+      </View>
     </EpisodeProvider>
   );
 }
