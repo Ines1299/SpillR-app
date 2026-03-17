@@ -10,8 +10,8 @@ import {
 import { useState, useEffect } from "react";
 import Send from "../../assets/send-button.jsx";
 import { useContext } from "react";
-import { UserContext } from "../../context/User.jsx";
-import { EpisodeContext } from "../../context/Episode.jsx";
+import { UserContext } from "../../context/User";
+import { EpisodeContext } from "../../context/Episode";
 import socket from "../../socket/connection.js";
 
 const Post = ({ comment_id, runtime_seconds, style }) => {

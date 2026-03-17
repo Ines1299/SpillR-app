@@ -1,7 +1,7 @@
 import { Image, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { getUserById } from "../../utils/utilsFunctions.js";
 import { useState, useEffect, useContext } from "react";
-import { UserContext } from "../../context/User.jsx";
+import { UserContext } from "../../context/User";
 import { commentStyles } from "../../styles/commentStyles.jsx";
 // import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { timeAgo } from "../../utils/CleanTime.js";

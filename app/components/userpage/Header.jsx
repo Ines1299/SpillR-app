@@ -12,6 +12,10 @@ import { useRouter } from "expo-router";
 export default function ProfileHeader({ userObj }) {
   const { loggedInUser } = useContext(UserContext);
   const firstName = userObj?.name?.split(" ")[0];
+  const isSelf = userObj.user_id === loggedInUser.user_id;
+  const isFriend = userObj.friends?.some(
+    (friend) => friend.friend_user_id === loggedInUser.user_id,
+  );
   const router = useRouter();
 
   return (
@@ -22,10 +26,12 @@ export default function ProfileHeader({ userObj }) {
           <Text style={styles.handle}>@{userObj.username}</Text>
         </View>
         <TouchableOpacity style={styles.editButton}>
-          {userObj.user_id === loggedInUser.user_id ? (
+          {isSelf ? (
             <Text style={styles.buttonText}>Edit</Text>
+          ) : isFriend ? (
+            <Text style={styles.buttonText}>Friends</Text>
           ) : (
-            <Text style={styles.buttonText}>friends</Text>
+            <Text style={styles.buttonText}>Add Friend</Text>
           )}
         </TouchableOpacity>
       </View>
