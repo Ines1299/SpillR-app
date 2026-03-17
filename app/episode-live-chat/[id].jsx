@@ -46,7 +46,7 @@ export default function LiveChatPage() {
   }, [id]);
 
   useEffect(() => {
-    if (isPlaying && !socket.connected) {
+    if (!socket.connected) {
       socket.connect();
       socket.emit("room:join", id);
       console.log(`socket connected and joined room ${id}`);
@@ -58,7 +58,7 @@ export default function LiveChatPage() {
         socket.disconnect();
       }
     };
-  }, [isPlaying]);
+  }, []);
 
   if (!episode) return <Text>Loading...</Text>;
 
