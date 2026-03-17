@@ -51,7 +51,11 @@ export default function LiveChatPage() {
       console.log(`socket connected and joined room ${id}`);
     }
     return () => {
-      socket.disconnect();
+      if (socket.connected) {
+        socket.emit("room:leave", id);
+        console.log(`socket left room ${id}`);
+        socket.disconnect();
+      }
     };
   }, [isPlaying]);
 
