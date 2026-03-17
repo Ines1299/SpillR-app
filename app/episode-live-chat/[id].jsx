@@ -83,19 +83,6 @@ export default function LiveChatPage() {
             <ImageBackground
               source={{ uri: episode.episode_url }}
               style={styles.heroImage}
-        <View style={styles.container}>
-          <ImageBackground
-            source={{ uri: episode.episode_url }}
-            style={styles.heroImage}
-          >
-            <LinearGradient
-              colors={[
-                "rgba(102,102,102,0)",
-                "rgba(16,16,16,0.90)",
-                "rgba(16,16,16,1)",
-              ]}
-              locations={[0.01, 0.7, 1]}
-              style={styles.heroOverlay}
             >
               <LinearGradient
                 colors={[
