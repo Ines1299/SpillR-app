@@ -233,6 +233,18 @@ export async function getUserByUsernameAPI(username) {
     throw error;
   }
 }
+
+export async function getCommentsRepliesReactionsById(userId) {
+  console.log("fetching", userId);
+  try {
+    const { data } = await axios.get(
+      `https://spillr-be.onrender.com/api/profiles/${userId}/history`,
+    );
+    return data.user;
+  } catch (error) {
+    throw error;
+  }
+}
 /*
 Returned data structure for getSeasonsAndEpisodesByShowName:
 

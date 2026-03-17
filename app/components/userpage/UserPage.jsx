@@ -14,17 +14,25 @@ import { commentStyles } from "../../../styles/commentStyles";
 import Comments from "../Comments";
 import ProfileHeader from "./Header";
 import SubLi from "./SubscribedLi";
-import { getUserByIdAPI } from "../../../utils/utilsFunctions";
+import {
+  getUserByIdAPI,
+  getCommentsRepliesReactionsById,
+} from "../../../utils/utilsFunctions";
 
 export default function UserPage() {
   const { loggedInUser } = useContext(UserContext);
   const [userObj, setUserObj] = useState({});
   const [subscriptions, setSubscriptions] = useState([]);
+  const [userComments, setUserComments] = useState([]);
 
   useEffect(() => {
     const fetchUserById = async () => {
       const result = await getUserByIdAPI(loggedInUser.user_id);
+      const comments = await getCommentsRepliesReactionsById(
+        loggedInUser.user_id,
+      );
       setUserObj(result);
+      setUserComments(comments);
       setSubscriptions(result.subscriptions);
     };
 
@@ -32,7 +40,8 @@ export default function UserPage() {
   }, [loggedInUser.user_id]);
 
   console.log(subscriptions);
-  const userComments = [
+
+  const exComments = [
     {
       comment_id: 1,
       user_id: loggedInUser.user_id,
