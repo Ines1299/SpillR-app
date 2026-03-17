@@ -43,7 +43,7 @@ export default function LiveChatPage() {
 
     loadEpisode();
   }, [id]);
-t 
+
   useEffect(() => {
     if (isPlaying && !socket.connected) {
       socket.connect();
