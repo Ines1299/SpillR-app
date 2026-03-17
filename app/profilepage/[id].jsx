@@ -9,11 +9,15 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { commentStyles } from "../../../styles/commentStyles";
-import Comments from "../Comments";
-import ProfileHeader from "./Header";
-import SubLi from "./SubscribedLi";
-import { getUserByIdAPI } from "../../../utils/utilsFunctions";
+import { commentStyles } from "../../styles/commentStyles";
+import Comments from "../components/Comments";
+import ProfileHeader from "../components/userpage/Header";
+import SubLi from "../components/userpage/SubscribedLi";
+import {
+  getUserByIdAPI,
+  getUserByUsernameAPI,
+  getCommentsRepliesReactionsById,
+} from "../../utils/utilsFunctions";
 
 import { useLocalSearchParams, useNavigation, Stack } from "expo-router";
 
@@ -21,83 +25,36 @@ export default function ProfilePage() {
   const { id, username } = useLocalSearchParams();
 
   const [userObj, setUserObj] = useState({});
+  const { loggedInUser } = useContext(UserContext);
+  const [subscriptions, setSubscriptions] = useState([]);
+  const [userComments, setUserComments] = useState([]);
 
   useEffect(() => {
     const fetchUserById = async () => {
       const result = await getUserByIdAPI(id);
+      const comments = await getCommentsRepliesReactionsById(id);
       setUserObj(result);
+      setUserComments(comments);
+      setSubscriptions(result.subscriptions);
     };
 
     fetchUserById();
   }, [id]);
 
-  const userComments = [
-    {
-      comment_id: 1,
-      user_id: loggedInUser.user_id,
-      body: "Exactly, why would you volunteer that you've been with 5 girls in a night willingly? No gun to your head",
-      created_at: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
-      reply_id: "r1",
-      tv_show_name: "Love Island",
-      season_number: 4,
-      episode_number: 3,
-      reactions_total: 100,
-      reactionType_total: {
-        angryTotal: 10,
-        laughingTotal: 40,
-        sadTotal: 5,
-        fireTotal: 20,
-        deadTotal: 15,
-        heartTotal: 10,
-      },
-    },
-    {
-      comment_id: 2,
-      user_id: loggedInUser.user_id,
-      reaction_type: "laughing",
-      created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      reaction_id: "re1",
-      tv_show_name: "Traitors",
-      season_number: 4,
-      episode_number: 2,
-    },
-    {
-      comment_id: 3,
-      user_id: loggedInUser.user_id,
-      body: "This cast is so messy but I cannot stop watching",
-      created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-      tv_show_name: "Geordie Shore",
-      season_number: 12,
-      episode_number: 1,
-      repliesTotal: 12,
-      reactions_total: 120,
-      reactionType_total: {
-        angryTotal: 70,
-        laughingTotal: 6,
-        sadTotal: 10,
-        fireTotal: 7,
-        deadTotal: 9,
-        heartTotal: 20,
-      },
-    },
-  ];
+  console.log(userObj);
 
   for (let i = 0; i < userComments.length; i++) {
-    let type = "";
     const obj = userComments[i];
-    const keys = Object.keys(obj);
 
-    if (keys.includes("reply_id")) {
-      type = "reply";
-    } else if (keys.includes("reaction_id")) {
-      type = "reaction";
+    if (obj.reaction_id !== null) {
+      obj.Commenttype = "reaction";
+    } else if (obj.reply_id !== null) {
+      obj.Commenttype = "reply";
     } else {
-      type = "comment";
+      obj.Commenttype = "comment";
     }
-
-    obj.Commenttype = type;
   }
-  const firstName = loggedInUser.name.split(" ")[0];
+
   return (
     <View style={styles.scrollArea}>
       <ScrollView>
@@ -106,7 +63,7 @@ export default function ProfilePage() {
 
           <Text style={styles.sectionTitle}>Subscribed Shows</Text>
 
-          <SubLi userSubscriptions={userObj.subscriptions} />
+          <SubLi userSubscriptions={subscriptions} />
 
           <Text style={styles.sectionTitle}>Comments and replies</Text>
 

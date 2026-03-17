@@ -1,7 +1,7 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useContext, useEffect, useState } from "react";
 
-import { UserContext } from "../../context/User";
+import { UserContext } from "../../../context/User";
 import {
   ScrollView,
   View,
@@ -31,6 +31,7 @@ export default function UserPage() {
       const comments = await getCommentsRepliesReactionsById(
         loggedInUser.user_id,
       );
+      console.log("result from API:", result);
       setUserObj(result);
       setUserComments(comments);
       setSubscriptions(result.subscriptions);
@@ -39,58 +40,7 @@ export default function UserPage() {
     fetchUserById();
   }, [loggedInUser.user_id]);
 
-  console.log(subscriptions);
-
-  const exComments = [
-    {
-      comment_id: 1,
-      user_id: loggedInUser.user_id,
-      body: "Exactly, why would you volunteer that you've been with 5 girls in a night willingly? No gun to your head",
-      created_at: new Date(Date.now() - 2 * 60 * 1000).toISOString(),
-      reply_id: "r1",
-      tv_show_name: "Love Island",
-      season_number: 4,
-      episode_number: 3,
-      reactions_total: 100,
-      reactionType_total: {
-        angryTotal: 10,
-        laughingTotal: 40,
-        sadTotal: 5,
-        fireTotal: 20,
-        deadTotal: 15,
-        heartTotal: 10,
-      },
-    },
-    {
-      comment_id: 2,
-      user_id: loggedInUser.user_id,
-      reaction_type: "laughing",
-      created_at: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
-      reaction_id: "re1",
-      tv_show_name: "Traitors",
-      season_number: 4,
-      episode_number: 2,
-    },
-    {
-      comment_id: 3,
-      user_id: loggedInUser.user_id,
-      body: "This cast is so messy but I cannot stop watching",
-      created_at: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
-      tv_show_name: "Geordie Shore",
-      season_number: 12,
-      episode_number: 1,
-      repliesTotal: 12,
-      reactions_total: 120,
-      reactionType_total: {
-        angryTotal: 70,
-        laughingTotal: 6,
-        sadTotal: 10,
-        fireTotal: 7,
-        deadTotal: 9,
-        heartTotal: 20,
-      },
-    },
-  ];
+  console.log(userObj);
 
   for (let i = 0; i < userComments.length; i++) {
     const obj = userComments[i];

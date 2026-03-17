@@ -1,29 +1,49 @@
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
 import { useContext, useEffect, useState } from "react";
-
-import { UserContext } from "../context/User";
+import { useRouter } from "expo-router";
+import { UserContext } from "../../context/User";
 
 export default function FriendCard({ friendObj, userPageID }) {
+  const router = useRouter();
   const { loggedInUser } = useContext(UserContext);
   return (
-    <View style={styles.row}>
-      <Image
-        style={styles.avatar}
-        source={{ uri: friendObj.friend_avatar_url }}
-      />
-      <View style={styles.content}>
-        <View style={styles.topRow}>
-          <Text style={styles.username}>@{friendObj.friend_username}</Text>
+    <Pressable
+      onPress={() =>
+        router.push({
+          pathname: "/profilepage/[id]",
+          params: {
+            id: friendObj.friend_user_id,
+            username: friendObj.friend_username,
+          },
+        })
+      }
+    >
+      <View style={styles.row}>
+        <Image
+          style={styles.avatar}
+          source={{ uri: friendObj.friend_avatar_url }}
+        />
+        <View style={styles.content}>
+          <View style={styles.topRow}>
+            <Text style={styles.username}>@{friendObj.friend_username}</Text>
+          </View>
         </View>
+        <TouchableOpacity style={styles.container}>
+          {userPageID === loggedInUser.user_id ? (
+            <Text style={styles.friends}>friends</Text>
+          ) : (
+            <Text style={styles.friends}>profile</Text>
+          )}
+        </TouchableOpacity>
       </View>
-      <TouchableOpacity style={styles.container}>
-        {userPageID === loggedInUser.user_id ? (
-          <Text style={styles.friends}>friends</Text>
-        ) : (
-          <Text style={styles.friends}>profile</Text>
-        )}
-      </TouchableOpacity>
-    </View>
+    </Pressable>
   );
 }
 

@@ -1,6 +1,6 @@
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import { useContext, useState } from "react";
-import { UserContext } from "../context/User";
+import { UserContext } from "../../context/User";
 import Reaction from "../../assets/react";
 import EmojiPicker from "./EmojiPicker.jsx";
 

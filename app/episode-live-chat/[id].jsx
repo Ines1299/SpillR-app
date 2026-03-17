@@ -20,7 +20,7 @@ import { globalStyles } from "../../styles/globalStyles";
 import PostBox from "../components/PostComment.jsx";
 import PollInput from "../components/PollInput.jsx";
 import socket from "../../socket/connection";
-import { EpisodeProvider } from "../context/Episode";
+import { EpisodeProvider } from "../../context/Episode";
 
 export default function LiveChatPage() {
   const { id, showName, seasonNumber } = useLocalSearchParams();

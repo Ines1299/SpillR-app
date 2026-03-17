@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import { UserProvider } from "./context/User";
+import { UserProvider } from "../context/User";
 import {
   useFonts,
   Inter_400Regular,
@@ -27,6 +27,7 @@ export default function RootLayout() {
           options={{ headerShown: false }}
         />
         <Stack.Screen name="FriendList" options={{ headerShown: false }} />
+        <Stack.Screen name="profilepage" options={{ headerShown: false }} />
       </Stack>
     </UserProvider>
   );

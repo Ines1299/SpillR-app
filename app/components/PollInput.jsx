@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useContext } from "react";
-import { UserContext } from "../context/User.jsx";
+import { UserContext } from "../../context/User";
 import { useState, useEffect } from "react";
 import Send from "../../assets/send-button.jsx";
 

@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { UserContext } from "../../context/User";
+import { UserContext } from "../../../context/User";
 import {
   ScrollView,
   View,
@@ -11,7 +11,7 @@ import {
 import { useRouter } from "expo-router";
 export default function ProfileHeader({ userObj }) {
   const { loggedInUser } = useContext(UserContext);
-  const firstName = loggedInUser.name.split(" ")[0];
+  const firstName = userObj?.name?.split(" ")[0];
   const router = useRouter();
 
   return (
@@ -19,18 +19,19 @@ export default function ProfileHeader({ userObj }) {
       <View style={styles.buttonNameContainer}>
         <View style={styles.nameContainer}>
           <Text style={styles.username}>{firstName}</Text>
-          <Text style={styles.handle}>@{loggedInUser.username}</Text>
+          <Text style={styles.handle}>@{userObj.username}</Text>
         </View>
         <TouchableOpacity style={styles.editButton}>
-          <Text style={styles.buttonText}>Edit</Text>
+          {userObj.user_id === loggedInUser.user_id ? (
+            <Text style={styles.buttonText}>Edit</Text>
+          ) : (
+            <Text style={styles.buttonText}>friends</Text>
+          )}
         </TouchableOpacity>
       </View>
 
       <View style={styles.profileRow}>
-        <Image
-          style={styles.userImage}
-          source={{ uri: loggedInUser.avatar_url }}
-        />
+        <Image style={styles.userImage} source={{ uri: userObj.avatar_url }} />
 
         <View style={styles.statsContainer}>
           <View style={styles.stat}>
