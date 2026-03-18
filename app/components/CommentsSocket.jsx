@@ -37,15 +37,7 @@ export default function CommentsSocket(props) {
       console.log(newComment);
       if (String(newComment.episode_id) !== String(episode_id)) return;
 
-      setComments((prevComments) => {
-        const alreadyExists = prevComments.some(
-          (comment) => comment.comment_id === newComment.comment_id,
-        );
-
-        if (alreadyExists) return prevComments;
-
-        return [newComment, ...prevComments];
-      });
+      bufferRef.current = [...bufferRef.current, newComment];
     };
     socket.on("comment:new", handleNewComment);
 
