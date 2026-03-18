@@ -1,6 +1,6 @@
 import { View, ScrollView, ActivityIndicator, Text } from "react-native";
 import Header from "../components/home-page/Header";
-import Trending from "../components/home-page/Trending";
+import Trending from "../components/Trending.jsx";
 import FriendsAreWatching from "../components/home-page/FriendsAreWatching";
 import Comments from "../components/Comments";
 import { getFeedComments } from "../../utils/utilsFunctions.js";

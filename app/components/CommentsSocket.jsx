@@ -64,6 +64,7 @@ export default function CommentsSocket(props) {
         // let the buffer/ticker handle it at the right time
         bufferRef.current = [...bufferRef.current, newComment];
       }
+      //
       setComments((prev) => [newComment, ...prev]);
     };
     socket.on("comment:new", handleNewComment);
