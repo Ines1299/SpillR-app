@@ -54,25 +54,25 @@ export default function Comments(props) {
     };
   }, [episode_id]);
 
-  // ─── Effect 1: Non-chat modes ─────────────────────────────────────────────────
+  // Non-chat modes
   useEffect(() => {
     if (isChat) return;
 
     // Home feed — pre-fetched in parent, passed as feedComments prop
     if (isHome) {
-      setComments(feedComments ?? []);
+      setComments(feedComments);
       return;
     }
 
     // Logged-in user's own profile page
     if (isUser) {
-      setComments(userComments ?? []);
+      setComments(userComments);
       return;
     }
 
     // Someone else's profile page
     if (isProfile) {
-      setComments(userComments ?? []);
+      setComments(userComments);
       return;
     }
   }, [isChat, isHome, isUser, isProfile, feedComments, userComments]);

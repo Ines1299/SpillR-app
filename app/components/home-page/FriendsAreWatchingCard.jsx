@@ -15,9 +15,11 @@ export default function FriendsAreWatchingCards() {
 const styles = StyleSheet.create({
   card: {
     marginTop: 10,
-    backgroundColor: "#aaaaaaff",
+    backgroundColor: "#211F21",
+    borderWidth: 0.5,
+    borderColor: "#2D2B2E",
     padding: 20,
-    borderRadius: 8,
+    borderRadius: 15,
     marginHorizontal: 6,
     flexDirection: "row",
     width: 250,
@@ -25,7 +27,7 @@ const styles = StyleSheet.create({
   cardText: {
     marginLeft: 10,
     flex: 1,
-    // textAlign: "flex-start",
+    color: "white",
     flexWrap: "wrap",
   },
   image: {

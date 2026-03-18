@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
     color: "#8F8D90",
   },
   container: {
-    marginTop: 40,
+    marginTop: 20,
     width: "100%",
     paddingHorizontal: 10,
   },
