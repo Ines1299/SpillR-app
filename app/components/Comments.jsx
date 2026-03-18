@@ -32,27 +32,20 @@ export default function Comments(props) {
   const bufferRef = useRef([]);
 
   useEffect(() => {
-    // missing piece to add websockets comments
     const handleNewComment = (newComment) => {
       console.log(newComment);
-      if (String(newComment.episode_id) !== String(episode_id)) return;
 
       setComments((prevComments) => {
-        const alreadyExists = prevComments.some(
-          (comment) => comment.comment_id === newComment.comment_id,
-        );
-
-        if (alreadyExists) return prevComments;
-
-        return [newComment, ...prevComments];
+        return (prevComments = [newComment, ...prevComments]);
       });
     };
+
     socket.on("comment:new", handleNewComment);
 
     return () => {
       socket.off("comment:new", handleNewComment);
     };
-  }, [episode_id]);
+  }, []);
 
   // Non-chat modes
   useEffect(() => {
