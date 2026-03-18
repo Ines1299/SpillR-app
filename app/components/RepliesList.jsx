@@ -10,9 +10,22 @@ import {
 } from "react-native";
 import { useEffect, useState } from "react";
 import { getRepliesByCommentId } from "../../utils/utilsFunctionsByApi.js";
+import socket from "../../socket/connection.js";
 
 const RepliesList = ({ comment_id }) => {
   const [replylist, setReplyList] = useState([]);
+
+  useEffect(() => {
+    const handleNewReply = (newReply) => {
+      console.log(newReply);
+      setReplyList((prev) => [newReply, ...prev]);
+    };
+    socket.on("reply:new", handleNewReply);
+    return () => {
+      socket.off("reply:new", handleNewReply);
+    };
+  }, [comment_id]);
+
   useEffect(() => {
     const fetchRepliesForThisComment = async () => {
       const result = await getRepliesByCommentId(comment_id);
