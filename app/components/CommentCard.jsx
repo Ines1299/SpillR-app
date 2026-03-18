@@ -1,7 +1,7 @@
 import { Image, View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { getUserById } from "../../utils/utilsFunctions.js";
 import { useState, useEffect, useContext } from "react";
-import { UserContext } from "../context/User.jsx";
+import { UserContext } from "../../context/User";
 import { commentStyles } from "../../styles/commentStyles.jsx";
 // import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { timeAgo } from "../../utils/CleanTime.js";
@@ -25,6 +25,7 @@ export default function CommentCard(props) {
     episode_number,
     season_number,
     runtime_seconds,
+    isHome,
     isChat,
     isLive,
     reactions_total,
@@ -67,7 +68,7 @@ export default function CommentCard(props) {
 
   const islive = isLive ? "live" : "replay";
 
-  const actor = username === loggedInUser.username ? "you" : `@${username}`;
+  const actor = username === loggedInUser.username ? "you" : "";
   const meta = type
     ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number}`
     : `posted in ${islive}`;

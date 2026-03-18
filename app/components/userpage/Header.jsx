@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { UserContext } from "../../context/User";
+import { UserContext } from "../../../context/User";
 import {
   ScrollView,
   View,
@@ -8,43 +8,64 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-
-export default function ProfileHeader() {
+import { useRouter } from "expo-router";
+export default function ProfileHeader({ userObj }) {
   const { loggedInUser } = useContext(UserContext);
-  const firstName = loggedInUser.name.split(" ")[0];
+  const firstName = userObj?.name?.split(" ")[0];
+  const isSelf = userObj.user_id === loggedInUser.user_id;
+  const isFriend = userObj.friends?.some(
+    (friend) => friend.friend_user_id === loggedInUser.user_id,
+  );
+  const router = useRouter();
+
   return (
     <View>
       <View style={styles.buttonNameContainer}>
         <View style={styles.nameContainer}>
           <Text style={styles.username}>{firstName}</Text>
-          <Text style={styles.handle}>@{loggedInUser.username}</Text>
+          <Text style={styles.handle}>@{userObj.username}</Text>
         </View>
         <TouchableOpacity style={styles.editButton}>
-          <Text style={styles.buttonText}>Edit</Text>
+          {isSelf ? (
+            <Text style={styles.buttonText}>Edit</Text>
+          ) : isFriend ? (
+            <Text style={styles.buttonText}>Friends</Text>
+          ) : (
+            <Text style={styles.buttonText}>Add Friend</Text>
+          )}
         </TouchableOpacity>
       </View>
 
       <View style={styles.profileRow}>
-        <Image
-          style={styles.userImage}
-          source={{ uri: loggedInUser.avatar_url }}
-        />
+        <Image style={styles.userImage} source={{ uri: userObj.avatar_url }} />
 
         <View style={styles.statsContainer}>
           <View style={styles.stat}>
-            <Text style={styles.statNumber}>10</Text>
-            <Text style={styles.statLabel}>Friends</Text>
+            <TouchableOpacity
+              style={{ alignItems: "center" }}
+              onPress={() =>
+                router.push({
+                  pathname: "/FriendList/[id]",
+                  params: {
+                    id: userObj.user_id,
+                    friendList: JSON.stringify(userObj.friends),
+                  },
+                })
+              }
+            >
+              <Text style={styles.statNumber}>{userObj.friend_count}</Text>
+              <Text style={styles.statLabel}>Friends</Text>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.stat}>
-            <Text style={styles.statNumber}>19</Text>
+            <Text style={styles.statNumber}>{userObj.subscription_count}</Text>
             <Text style={styles.statLabel}>Subscribed</Text>
           </View>
         </View>
       </View>
       <Text style={styles.bio}>
-        Love Island is life!!! Also stream the new BTS album if you're a real
-        one and not an OP x
+        {userObj.bio ? userObj.bio : "Nothing to see here yet.."}
       </Text>
     </View>
   );
@@ -135,7 +156,7 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   bio: {
-    color: "#ffffff",
+    color: "rgb(214, 213, 213)",
     marginTop: 10,
     marginLeft: 20,
     marginRight: 22,

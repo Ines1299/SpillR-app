@@ -1,4 +1,5 @@
 import { supabase } from "../lib/supabaseClient.js";
+import axios from "axios";
 
 export async function getTvShowByName(name) {
   let { data, error } = await supabase // get tv show by name
@@ -142,18 +143,15 @@ export async function getEpisodeById(id) {
 // }
 
 export async function getFeedComments(user_id, offset) {
-  // should be default 0 offset
   try {
-    const { data, error } = await fetch(
-      `https://spillr-be.onrender.com/api/comments/a1b2c3d4-e5f6-7890-abcd-ef1234567890/feed?offset=${offset}`,
+    const response = await fetch(
+      `https://spillr-be.onrender.com/api/comments/${user_id}/feed?offset=${offset}`,
     );
-
-    if (error) throw new Error();
-
-    return data;
+    const data = await response.json();
+    return data.comments;
   } catch (error) {
     console.log("Feed comment search failed", error);
-    return;
+    return [];
   }
 }
 
@@ -211,6 +209,41 @@ export async function getUserById(userId) {
   return data;
 }
 
+export async function getUserByIdAPI(user_id) {
+  console.log("fetching", user_id);
+  try {
+    const { data } = await axios.get(
+      `https://spillr-be.onrender.com/api/profiles/id/${user_id}`,
+    );
+    return data.user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getUserByUsernameAPI(username) {
+  console.log("fetching", user_id);
+  try {
+    const { data } = await axios.get(
+      `https://spillr-be.onrender.com/api/profiles/username/${username}`,
+    );
+    return data.user;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getCommentsRepliesReactionsById(userId) {
+  console.log("fetching", userId);
+  try {
+    const { data } = await axios.get(
+      `https://spillr-be.onrender.com/api/profiles/${userId}/history`,
+    );
+    return data.user;
+  } catch (error) {
+    throw error;
+  }
+}
 /*
 Returned data structure for getSeasonsAndEpisodesByShowName:
 

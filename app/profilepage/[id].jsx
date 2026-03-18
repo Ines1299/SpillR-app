@@ -1,7 +1,6 @@
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useContext, useEffect, useState } from "react";
-
-import { UserContext } from "../../../context/User";
+import { UserContext } from "../../context/User";
 import {
   ScrollView,
   View,
@@ -10,35 +9,37 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
-import { commentStyles } from "../../../styles/commentStyles";
-import Comments from "../Comments";
-import ProfileHeader from "./Header";
-import SubLi from "./SubscribedLi";
+import { commentStyles } from "../../styles/commentStyles";
+import Comments from "../components/Comments";
+import ProfileHeader from "../components/userpage/Header";
+import SubLi from "../components/userpage/SubscribedLi";
 import {
   getUserByIdAPI,
+  getUserByUsernameAPI,
   getCommentsRepliesReactionsById,
-} from "../../../utils/utilsFunctions";
+} from "../../utils/utilsFunctions";
 
-export default function UserPage() {
-  const { loggedInUser } = useContext(UserContext);
+import { useLocalSearchParams, useNavigation, Stack } from "expo-router";
+
+export default function ProfilePage() {
+  const { id, username } = useLocalSearchParams();
+
   const [userObj, setUserObj] = useState({});
+  const { loggedInUser } = useContext(UserContext);
   const [subscriptions, setSubscriptions] = useState([]);
   const [userComments, setUserComments] = useState([]);
 
   useEffect(() => {
     const fetchUserById = async () => {
-      const result = await getUserByIdAPI(loggedInUser.user_id);
-      const comments = await getCommentsRepliesReactionsById(
-        loggedInUser.user_id,
-      );
-      console.log("result from API:", result);
+      const result = await getUserByIdAPI(id);
+      const comments = await getCommentsRepliesReactionsById(id);
       setUserObj(result);
       setUserComments(comments);
       setSubscriptions(result.subscriptions);
     };
 
     fetchUserById();
-  }, [loggedInUser.user_id]);
+  }, [id]);
 
   for (let i = 0; i < userComments.length; i++) {
     const obj = userComments[i];
@@ -51,7 +52,7 @@ export default function UserPage() {
       obj.Commenttype = "comment";
     }
   }
-  const firstName = loggedInUser.name.split(" ")[0];
+
   return (
     <View style={styles.scrollArea}>
       <ScrollView>
@@ -64,7 +65,7 @@ export default function UserPage() {
 
           <Text style={styles.sectionTitle}>Comments and replies</Text>
 
-          <Comments isUser={true} userComments={userComments} />
+          <Comments userComments={userComments} isProfile={true} />
         </View>
       </ScrollView>
     </View>

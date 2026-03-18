@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import { UserProvider } from "./context/User";
+import { UserProvider } from "../context/User";
 import {
   useFonts,
   Inter_400Regular,
@@ -12,6 +12,7 @@ export default function RootLayout() {
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,
+    Agenda: require("../assets/fonts/Agenda.ttf"),
   });
 
   if (!fontsLoaded) return null;
@@ -26,6 +27,8 @@ export default function RootLayout() {
           name="episode-live-chat"
           options={{ headerShown: false }}
         />
+        <Stack.Screen name="FriendList" options={{ headerShown: false }} />
+        <Stack.Screen name="profilepage" options={{ headerShown: false }} />
       </Stack>
     </UserProvider>
   );

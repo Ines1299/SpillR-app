@@ -20,7 +20,7 @@ import { globalStyles } from "../../styles/globalStyles";
 import PostBox from "../components/PostComment.jsx";
 import PollInput from "../components/PollInput.jsx";
 import socket from "../../socket/connection";
-import { EpisodeProvider } from "../context/Episode";
+import { EpisodeProvider } from "../../context/Episode";
 
 export default function LiveChatPage() {
   const { id, showName, seasonNumber } = useLocalSearchParams();
@@ -46,7 +46,7 @@ export default function LiveChatPage() {
   }, [id]);
 
   useEffect(() => {
-    if (isPlaying && !socket.connected) {
+    if (!socket.connected) {
       socket.connect();
       socket.emit("room:join", id);
       console.log(`socket connected and joined room ${id}`);
@@ -58,7 +58,7 @@ export default function LiveChatPage() {
         socket.disconnect();
       }
     };
-  }, [isPlaying]);
+  }, []);
 
   if (!episode) return <Text>Loading...</Text>;
 
@@ -158,9 +158,15 @@ export default function LiveChatPage() {
             setShowPollInput={setShowPollInput}
           />
         </View>
-        {showPost && <PostBox episode_id={id} style={styles.postBar} />}
+        {showPost && (
+          <PostBox
+            episode_id={id}
+            currentSecond={currentSeconds}
+            style={styles.postBar}
+          />
+        )}
         {showPollInput && <PollInput episode_id={id} style={styles.postBar} />}
-      </View>{" "}
+      </View>
     </EpisodeProvider>
   );
 }
