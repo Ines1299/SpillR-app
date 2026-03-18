@@ -94,9 +94,7 @@ export default function CommentCard(props) {
         <View style={commentStyles.commentContent}>
           <View style={commentStyles.commentTopRow}>
             <Text style={commentStyles.commentUser}>@{username}</Text>
-            <Text style={commentStyles.commentTime}>
-              {isChat ? formatRuntime(runtime_seconds) : relativeTime}
-            </Text>
+            <Text style={commentStyles.commentTime}>{relativeTime}</Text>
           </View>
           <Text style={commentStyles.commentMeta}>{meta}</Text>
           <Text style={commentStyles.commentText}>{body}</Text>

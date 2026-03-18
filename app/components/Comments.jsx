@@ -1,5 +1,5 @@
 import { ScrollView, View, Text, StyleSheet } from "react-native";
-import CommentCard from "./CommentCardSockets.jsx";
+import CommentCard from "./CommentCard.jsx";
 import {
   getCommentsByEpisodeId,
   getFilteredCommentsByEpisodeId,
@@ -11,48 +11,11 @@ import emojiLookup from "../../utils/emojiLookupObject.js";
 import socket from "../../socket/connection.js";
 
 export default function Comments(props) {
-  const {
-    setScrubFinished,
-    scrubFinished,
-    currentSeconds,
-    episode_id,
-    isHome,
-    isUser,
-    isProfile,
-    isChat,
-    feedComments,
-    userComments,
-    isPlaying,
-    isScrubbing,
-  } = props;
+  const { isHome, isUser, isProfile, isChat, feedComments, userComments } =
+    props;
 
   const [comments, setComments] = useState([]);
-  const currentSecondsRef = useRef(currentSeconds);
   const { loggedInUser } = useContext(UserContext);
-  const bufferRef = useRef([]);
-
-  useEffect(() => {
-    // missing piece to add websockets comments
-    const handleNewComment = (newComment) => {
-      console.log(newComment);
-      if (String(newComment.episode_id) !== String(episode_id)) return;
-
-      setComments((prevComments) => {
-        const alreadyExists = prevComments.some(
-          (comment) => comment.comment_id === newComment.comment_id,
-        );
-
-        if (alreadyExists) return prevComments;
-
-        return [newComment, ...prevComments];
-      });
-    };
-    socket.on("comment:new", handleNewComment);
-
-    return () => {
-      socket.off("comment:new", handleNewComment);
-    };
-  }, [episode_id]);
 
   // Non-chat modes
   useEffect(() => {
@@ -76,88 +39,6 @@ export default function Comments(props) {
       return;
     }
   }, [isChat, isHome, isUser, isProfile, feedComments, userComments]);
-
-  // ─── Effect 2: Chat — initial load ───────────────────────────────────────────
-  // When video is at t=0 and paused, fetch all comments for the episode
-  useEffect(() => {
-    if (!isChat || !episode_id) return;
-    if (currentSeconds !== 0 || isPlaying) return;
-
-    const fetchAllComments = async () => {
-      const result = await getCommentsByEpisodeId(episode_id);
-      setComments(result);
-    };
-    fetchAllComments();
-  }, [currentSeconds, isPlaying, episode_id]);
-
-  // ─── Effect 3: Chat — scrub ───────────────────────────────────────────────────
-  // User jumped to a new timestamp — fetch and show all comments up to that point
-  useEffect(() => {
-    if (!isChat || !episode_id) return;
-    if (currentSecondsRef.current === 0 && !isPlaying) return;
-
-    const safeSeconds = Math.floor(currentSecondsRef.current);
-
-    getFilteredCommentsByEpisodeId(episode_id, safeSeconds).then((result) => {
-      bufferRef.current = result;
-      setComments(
-        [...result].sort((a, b) => b.runtime_seconds - a.runtime_seconds),
-      );
-      setScrubFinished(false);
-    });
-  }, [scrubFinished]);
-
-  // ─── Effect 4: Chat — 30s polling while playing ───────────────────────────────
-  // Pre-fetches comments 3 mins ahead into a buffer; never sets comments directly
-  useEffect(() => {
-    if (!isChat || !episode_id) return;
-    if (!isPlaying || isScrubbing) return;
-
-    // Reset buffer when playback starts from zero
-    if (bufferRef.current.length === 0 || currentSecondsRef.current === 0) {
-      bufferRef.current = [];
-      setComments([]);
-    }
-
-    const mergeIntoBuffer = (incoming) => {
-      const existingIds = new Set(bufferRef.current.map((c) => c.comment_id));
-      const newComments = incoming.filter(
-        (c) => !existingIds.has(c.comment_id),
-      );
-      bufferRef.current = [...bufferRef.current, ...newComments];
-    };
-
-    const fetchAhead = async () => {
-      const safeSeconds = Math.floor(currentSecondsRef.current);
-      const results = await getFilteredCommentsByEpisodeId(
-        episode_id,
-        safeSeconds,
-      );
-      mergeIntoBuffer(results);
-    };
-
-    fetchAhead();
-    const interval = setInterval(fetchAhead, 30000);
-    return () => clearInterval(interval);
-  }, [isPlaying, isScrubbing, episode_id]);
-
-  // ─── Effect 5: Chat — reveal buffered comments in real time ──────────────────
-  // Runs every second; drip-feeds buffered comments whose timestamp is now due
-  useEffect(() => {
-    if (isScrubbing || isHome) return;
-
-    const newlyDue = bufferRef.current.filter(
-      (c) => c.runtime_seconds === currentSeconds,
-    );
-    if (newlyDue.length === 0) return;
-
-    setComments((prev) => {
-      const existingIds = new Set(prev.map((c) => c.comment_id));
-      const incoming = newlyDue.filter((c) => !existingIds.has(c.comment_id));
-      if (incoming.length === 0) return prev;
-      return [...incoming, ...prev];
-    });
-  }, [currentSeconds]);
 
   return (
     <ScrollView

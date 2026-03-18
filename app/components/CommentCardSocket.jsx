@@ -14,7 +14,7 @@ import EmojiPicker from "./EmojiPicker.jsx";
 
 //comment flow for a single comment card, complete with how long ago it was
 // posted relative to now, who posted it and a space for other meta data like where it was posted
-export default function CommentCard(props) {
+export default function CommentCardSocket(props) {
   const {
     comment_id,
     body,

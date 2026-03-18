@@ -1,5 +1,5 @@
 import { ScrollView, View, Text, StyleSheet } from "react-native";
-import CommentCard from "./CommentCardSockets.jsx";
+import CommentCardSocket from "./CommentCardSocket.jsx";
 import {
   getCommentsByEpisodeId,
   getFilteredCommentsByEpisodeId,
@@ -10,7 +10,7 @@ import { commentStyles } from "../../styles/commentStyles.jsx";
 import emojiLookup from "../../utils/emojiLookupObject.js";
 import socket from "../../socket/connection.js";
 
-export default function Comments(props) {
+export default function CommentsSocket(props) {
   const {
     setScrubFinished,
     scrubFinished,
@@ -54,29 +54,6 @@ export default function Comments(props) {
     };
   }, [episode_id]);
 
-  // Non-chat modes
-  useEffect(() => {
-    if (isChat) return;
-
-    // Home feed — pre-fetched in parent, passed as feedComments prop
-    if (isHome) {
-      setComments(feedComments);
-      return;
-    }
-
-    // Logged-in user's own profile page
-    if (isUser) {
-      setComments(userComments);
-      return;
-    }
-
-    // Someone else's profile page
-    if (isProfile) {
-      setComments(userComments);
-      return;
-    }
-  }, [isChat, isHome, isUser, isProfile, feedComments, userComments]);
-
   // ─── Effect 2: Chat — initial load ───────────────────────────────────────────
   // When video is at t=0 and paused, fetch all comments for the episode
   useEffect(() => {
@@ -88,7 +65,7 @@ export default function Comments(props) {
       setComments(result);
     };
     fetchAllComments();
-  }, [currentSeconds, isPlaying, episode_id]);
+  }, [isChat, currentSeconds, isPlaying, episode_id]);
 
   // ─── Effect 3: Chat — scrub ───────────────────────────────────────────────────
   // User jumped to a new timestamp — fetch and show all comments up to that point
@@ -170,7 +147,7 @@ export default function Comments(props) {
       {comments?.length > 0 ? (
         comments.map((comment, index) => (
           <View key={`${comment.comment_id},${index}`}>
-            <CommentCard
+            <CommentCardSocket
               isHome={isHome}
               isChat={isChat}
               isLive={comment.is_live}
