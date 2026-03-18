@@ -77,6 +77,8 @@ export default function CommentCardSocket(props) {
     : `posted in ${islive}`;
 
   useEffect(() => {
+    // THIS USE EFFECT IS FETCHING INFINITELY EVERY SECOND
+    console.log("fetchUser effect");
     const fetchUser = async () => {
       if (!user_id) return;
       const result = await getUserById(user_id);
