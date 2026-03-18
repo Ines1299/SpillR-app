@@ -177,7 +177,7 @@ export default function CommentCardSocket(props) {
       {showReplies && (
         <>
           <View style={styles.threadLine} />
-          <RepliesList comment_id={comment_id} />
+          <RepliesList comment_id={comment_id} parent_username={username} />
         </>
       )}
     </View>
