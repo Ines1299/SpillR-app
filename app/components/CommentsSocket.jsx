@@ -50,20 +50,20 @@ export default function CommentsSocket(props) {
     // missing piece to add websockets comments
     const handleNewComment = (newComment) => {
       console.log(newComment);
-      // if (String(newComment.episode_id) !== String(episode_id)) return;
-      // if (newComment.user_id === loggedInUser.user_id) {
-      //   addOptimisticComment(newComment);
-      // } else {
-      //   const diff = Math.abs(
-      //     newComment.runtime_seconds - currentSecondsRef.current,
-      //   );
-      //   //if the new comment added is near your runtime seconds add it immediately
-      //   if (diff <= 30) {
-      //     addOptimisticComment(newComment);
-      //   }
-      //   // let the buffer/ticker handle it at the right time
-      //   bufferRef.current = [...bufferRef.current, newComment];
-      // }
+      if (String(newComment.episode_id) !== String(episode_id)) return;
+      if (newComment.user_id === loggedInUser.user_id) {
+        addOptimisticComment(newComment);
+      } else {
+        const diff = Math.abs(
+          newComment.runtime_seconds - currentSecondsRef.current,
+        );
+        //if the new comment added is near your runtime seconds add it immediately
+        if (diff <= 30) {
+          addOptimisticComment(newComment);
+        }
+        // let the buffer/ticker handle it at the right time
+        bufferRef.current = [...bufferRef.current, newComment];
+      }
       setComments((prev) => [newComment, ...prev]);
     };
     socket.on("comment:new", handleNewComment);
