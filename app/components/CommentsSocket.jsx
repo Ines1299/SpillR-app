@@ -54,7 +54,7 @@ export default function CommentsSocket(props) {
     };
   }, [episode_id]);
 
-  // ─── Effect 2: Chat — initial load ───────────────────────────────────────────
+  // ─── initial load ───────────────────────────────────────────
   // When video is at t=0 and paused, fetch all comments for the episode
   useEffect(() => {
     if (!isChat || !episode_id) return;
@@ -67,8 +67,8 @@ export default function CommentsSocket(props) {
     fetchAllComments();
   }, [isChat, currentSeconds, isPlaying, episode_id]);
 
-  // ─── Effect 3: Chat — scrub ───────────────────────────────────────────────────
-  // User jumped to a new timestamp — fetch and show all comments up to that point
+  // ─── Chat — scrub ───────────────────────────────────────────────────
+  // User jumped to a new timestamp —, refresh the buffer array and fetch and show all comments up to that point
   useEffect(() => {
     if (!isChat || !episode_id) return;
     if (currentSecondsRef.current === 0 && !isPlaying) return;
@@ -84,7 +84,7 @@ export default function CommentsSocket(props) {
     });
   }, [scrubFinished]);
 
-  // ─── Effect 4: Chat — 30s polling while playing ───────────────────────────────
+  // ─── Chat — while playing, 30s polling starts ───────────────────────────────
   // Pre-fetches comments 3 mins ahead into a buffer; never sets comments directly
   useEffect(() => {
     if (!isChat || !episode_id) return;
