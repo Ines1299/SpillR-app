@@ -1,4 +1,12 @@
-import { Image, View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  Image,
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  Pressable,
+} from "react-native";
+import { useRouter } from "expo-router";
 import { getUserById } from "../../utils/utilsFunctions.js";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../context/User.jsx";
@@ -11,6 +19,7 @@ import Reaction from "../../assets/react.jsx";
 import SpoilerFlag from "../../assets/SpoilerFlag.jsx";
 import RepliesList from "./RepliesList.jsx";
 import EmojiPicker from "./EmojiPicker.jsx";
+import { getTvShowByName } from "../../utils/utilsFunctions.js";
 
 //comment flow for a single comment card, complete with how long ago it was
 // posted relative to now, who posted it and a space for other meta data like where it was posted
@@ -42,6 +51,27 @@ export default function CommentCard(props) {
   );
   const [showReplies, setShowReplies] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [show, setShow] = useState(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    const fetchShow = async () => {
+      if (!tv_show_name) return;
+      try {
+        const result = await getTvShowByName(tv_show_name);
+        setShow(result);
+      } catch (err) {
+        console.error("Failed to fetch show:", err);
+      }
+    };
+    fetchShow();
+  }, [tv_show_name]);
+
+  // ← update the handler
+  const handleNavigateToShow = () => {
+    if (!show?.tv_show_id) return;
+    router.push(`/tv-show/${show.tv_show_id}`);
+  };
 
   const handleToggleReplies = () => {
     if (!isChat) return;
@@ -96,8 +126,10 @@ export default function CommentCard(props) {
             <Text style={commentStyles.commentUser}>@{username}</Text>
             <Text style={commentStyles.commentTime}>{relativeTime}</Text>
           </View>
-          <Text style={commentStyles.commentMeta}>{meta}</Text>
-          <Text style={commentStyles.commentText}>{body}</Text>
+          <Pressable onPress={() => router.push(`/tv-show/${show.tv_show_id}`)}>
+            <Text style={commentStyles.commentMeta}>{meta}</Text>
+            <Text style={commentStyles.commentText}>{body}</Text>
+          </Pressable>
         </View>
       </View>
       {!isReaction && (
