@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { commentStyles } from "../../../styles/commentStyles";
-import Comments from "../CommentList";
+import CommentList from "../CommentList";
 import ProfileHeader from "../ProfileHeader";
 import SubLi from "../SubscribedLi";
 import {
@@ -64,7 +64,7 @@ export default function UserPage() {
 
           <Text style={styles.sectionTitle}>Comments and replies</Text>
 
-          <Comments isUser={true} userComments={userComments} />
+          <CommentList isUser={true} userComments={userComments} />
         </View>
       </ScrollView>
     </View>

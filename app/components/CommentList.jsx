@@ -9,7 +9,7 @@ import { useState, useEffect, useRef, useContext } from "react";
 import { commentStyles } from "../../styles/commentStyles.jsx";
 import emojiLookup from "../../utils/emojiLookupObject.js";
 
-export default function Comments(props) {
+export default function CommentList(props) {
   const { isHome, isUser, isProfile, isChat, feedComments, userComments } =
     props;
 
