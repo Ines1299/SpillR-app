@@ -29,7 +29,9 @@ export default function CommentList(props) {
                 isLive={comment.is_live}
                 user_id={comment.user_id}
                 body={
-                  comment.body ? comment.body : emojiLookup(comment.reaction_type)
+                  comment.body
+                    ? comment.body
+                    : emojiLookup(comment.reaction_type)
                 }
                 created_at={comment.created_at}
                 comment_id={comment.comment_id}
@@ -46,7 +48,7 @@ export default function CommentList(props) {
               />
             ) : (
               <CommentCard
-                avatar_url={comment.avatar_url}
+                avatarUrl={comment.avatar_url}
                 username={comment.username}
                 isSpoiler={comment.is_spoiler}
                 setComments={setComments}
@@ -55,7 +57,9 @@ export default function CommentList(props) {
                 isLive={comment.is_live}
                 user_id={comment.user_id}
                 body={
-                  comment.body ? comment.body : emojiLookup(comment.reaction_type)
+                  comment.body
+                    ? comment.body
+                    : emojiLookup(comment.reaction_type)
                 }
                 created_at={comment.created_at}
                 comment_id={comment.comment_id}
