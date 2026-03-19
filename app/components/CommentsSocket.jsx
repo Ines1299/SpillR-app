@@ -252,7 +252,7 @@ export default function CommentsSocket(props) {
         <Text style={styles.noComments}>
           {isHome
             ? null
-            : `No reactions at this timestamp yet, keep playing to see more... or be the first?`}
+            : `No comments or reactions at this timestamp yet, keep playing to see more... or be the first?`}
         </Text>
       )}
     </ScrollView>
@@ -263,6 +263,7 @@ const styles = StyleSheet.create({
   noComments: {
     color: "#8E8E8E",
     fontWeight: 700,
+    paddingLeft: 5,
   },
 
   scrollArea: {
