@@ -70,6 +70,7 @@ export default function Comments(props) {
               isReaction={comment.reaction_id}
               isReply={comment.reply_id}
               reactionType_total={comment.reactionType_total}
+              setComments={setComments}
             />
             <View style={styles.divider} />
           </View>
