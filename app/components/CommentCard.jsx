@@ -20,6 +20,7 @@ import SpoilerFlag from "../../assets/SpoilerFlag.jsx";
 import RepliesList from "./RepliesList.jsx";
 import EmojiPicker from "./EmojiPicker.jsx";
 import { getTvShowByName } from "../../utils/utilsFunctions.js";
+import socket from "../../socket/connection.js";
 
 //comment flow for a single comment card, complete with how long ago it was
 // posted relative to now, who posted it and a space for other meta data like where it was posted
@@ -42,11 +43,13 @@ export default function CommentCard(props) {
     repliesTotal,
     isReaction,
     isReply,
+    setComments,
   } = props;
 
   const [username, setUserName] = useState(null);
   const [userurl, setUserurl] = useState(null);
   const { loggedInUser } = useContext(UserContext);
+  const [deletePressed, setDeletePressed] = useState(false);
   const [reactionCount, setReactionCount] = useState(reactions_total);
   const [Type_total, setType_total] = useState(reactionType_total);
   const [lastReaction, setlastReaction] = useState("");
@@ -57,6 +60,23 @@ export default function CommentCard(props) {
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [show, setShow] = useState(null);
   const router = useRouter();
+
+  const handlePressDelete = (comment_id) => {
+    if (isReply) return;
+    console.log("instruction to delete sent");
+    socket.emit("comment:delete", comment_id);
+    setDeletePressed(!deletePressed);
+
+    const removeComment = (comment_id) => {
+      console.log("remove func");
+      setComments((prev) => prev.filter((c) => c.comment_id !== comment_id));
+    };
+
+    removeComment(comment_id);
+
+    console.log("useEffect ran");
+    socket.on("comment:remove", removeComment);
+  };
 
   useEffect(() => {
     const fetchShow = async () => {
@@ -186,6 +206,7 @@ export default function CommentCard(props) {
                 width={22}
                 height={22}
                 style={{ transform: [{ translateY: 2 }] }}
+                onPress={() => handlePressDelete(comment_id)}
               />
             </TouchableOpacity>
           ) : (
