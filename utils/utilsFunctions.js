@@ -1,5 +1,8 @@
 import { supabase } from "../lib/supabaseClient.js";
 import axios from "axios";
+import { url } from "./constants.js";
+
+const urlApi = url + "/api";
 
 export async function getTvShowByName(name) {
   let { data, error } = await supabase // get tv show by name
@@ -145,7 +148,7 @@ export async function getEpisodeById(id) {
 export async function getFeedComments(user_id, offset) {
   try {
     const response = await fetch(
-      `https://spillr-be.onrender.com/api/comments/${user_id}/feed?offset=${offset}`,
+      `${urlApi}/comments/${user_id}/feed?offset=${offset}`,
     );
     const data = await response.json();
     return data.comments;
@@ -174,16 +177,13 @@ export async function searchLocalTvShows(name) {
 
 export async function searchExternalTvShows(name) {
   try {
-    const response = await fetch(
-      "https://spillr-be.onrender.com/api/tv-shows",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ show_name: name }),
+    const response = await fetch(`${urlApi}/tv-shows`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    );
+      body: JSON.stringify({ show_name: name }),
+    });
 
     if (!response.ok) {
       console.error("External API error:", response.statusText);
@@ -228,9 +228,7 @@ export async function getUserById(userId) {
 export async function getUserByIdAPI(user_id) {
   console.log("fetching", user_id);
   try {
-    const { data } = await axios.get(
-      `https://spillr-be.onrender.com/api/profiles/id/${user_id}`,
-    );
+    const { data } = await axios.get(`${urlApi}/profiles/id/${user_id}`);
     return data.user;
   } catch (error) {
     throw error;
@@ -240,9 +238,7 @@ export async function getUserByIdAPI(user_id) {
 export async function getUserByUsernameAPI(username) {
   console.log("fetching", user_id);
   try {
-    const { data } = await axios.get(
-      `https://spillr-be.onrender.com/api/profiles/username/${username}`,
-    );
+    const { data } = await axios.get(`${urlApi}/profiles/username/${username}`);
     return data.user;
   } catch (error) {
     throw error;
@@ -252,9 +248,7 @@ export async function getUserByUsernameAPI(username) {
 export async function getCommentsRepliesReactionsById(userId) {
   console.log("fetching", userId);
   try {
-    const { data } = await axios.get(
-      `https://spillr-be.onrender.com/api/profiles/${userId}/history`,
-    );
+    const { data } = await axios.get(`${urlApi}/profiles/${userId}/history`);
     return data.user;
   } catch (error) {
     throw error;
