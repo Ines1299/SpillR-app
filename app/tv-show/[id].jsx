@@ -5,6 +5,7 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
@@ -26,6 +27,11 @@ export default function TvShowPage() {
   const navigation = useNavigation();
   const [show, setShow] = useState({});
   const [expanded, setExpanded] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const handleSubscribe = () => {
+    setIsSubscribed(!isSubscribed);
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -118,6 +124,27 @@ export default function TvShowPage() {
                 {expanded ? "Read less" : "Read more"}
               </Text>
             </LinearGradient>
+            <TouchableOpacity
+              style={[
+                styles.editButton,
+                {
+                  borderColor: isSubscribed ? "#E500FF" : "#2663f4",
+                  backgroundColor: isSubscribed
+                    ? "rgba(229,0,255,0.15)"
+                    : "rgba(0,0,0,0.4)",
+                },
+              ]}
+              onPress={handleSubscribe}
+            >
+              <Text
+                style={[
+                  styles.buttonText,
+                  { color: isSubscribed ? "#E500FF" : "#2663f4" },
+                ]}
+              >
+                {isSubscribed ? "Subscribed" : "Subscribe"}
+              </Text>
+            </TouchableOpacity>
           </View>
 
           <Dropdown
@@ -132,6 +159,23 @@ export default function TvShowPage() {
 }
 
 const styles = StyleSheet.create({
+  editButton: {
+    position: "absolute",
+    top: 130,
+    right: 25,
+    backgroundColor: "rgba(0,0,0,0.4)",
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: "#2663f4",
+  },
+  buttonText: {
+    textAlign: "center",
+    color: "#2663f4",
+    fontSize: 12,
+    fontWeight: 500,
+  },
   imageContainer: {
     width: "100%",
     height: 350,
