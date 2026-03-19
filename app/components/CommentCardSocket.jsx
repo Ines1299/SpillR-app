@@ -106,11 +106,9 @@ export default function CommentCardSocket(props) {
     setSpoilerPressed(!spoilerPressed);
 
     setComments((prev) =>
-      prev.forEach((c) => {
-        if (c.comment_id === comment_id) {
-          c.is_spoiler = !c.is_spoiler;
-        }
-      }),
+      prev.map((c) =>
+        c.comment_id === comment_id ? { ...c, is_spoiler: true } : c,
+      ),
     );
   };
 
