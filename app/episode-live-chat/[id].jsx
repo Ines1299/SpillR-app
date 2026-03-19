@@ -114,7 +114,8 @@ export default function LiveChatPage() {
         <View style={styles.paragraph}>
           <Text style={styles.upcomingTitle}>Room not open yet</Text>
           <Text style={styles.upcomingBody}>
-            Come back on {formattedAirtime} to join the live watchparty.
+            Fan of {showName}? Come back on {formattedAirtime} to join the live
+            watchparty.
           </Text>
         </View>
       </View>
