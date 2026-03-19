@@ -203,7 +203,7 @@ export default function LiveChatPage() {
             setScrubSwitch={setScrubSwitch}
             scrubSwitch={scrubSwitch}
             currentSeconds={currentSeconds}
-            episode_id={episode.episode_id}
+            episodeId={episode.episode_id}
             isChat={true}
             isPlaying={isPlaying}
             isScrubbing={isScrubbing}

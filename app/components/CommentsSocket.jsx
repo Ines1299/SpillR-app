@@ -17,7 +17,7 @@ export default function CommentsSocket(props) {
     setScrubSwitch,
     scrubSwitch,
     currentSeconds,
-    episode_id,
+    episodeId,
     isHome,
     isUser,
     isProfile,
@@ -28,11 +28,11 @@ export default function CommentsSocket(props) {
     isScrubbing,
   } = props;
 
-  const [comments, setComments] = useState([]);
-  const currentSecondsRef = useRef(currentSeconds);
-  const { loggedInUser } = useContext(UserContext);
-  const bufferRef = useRef([]);
-  const addOptimisticCommentRef = useRef(null);
+  // const [comments, setComments] = useState([]);
+  // const currentSecondsRef = useRef(currentSeconds);
+  // const { loggedInUser } = useContext(UserContext);
+  // const bufferRef = useRef([]);
+  // const addOptimisticCommentRef = useRef(null);
 
   useEffect(() => {
     currentSecondsRef.current = currentSeconds;
@@ -76,7 +76,7 @@ export default function CommentsSocket(props) {
   const fetchAhead = async () => {
     const safeSeconds = Math.floor(currentSecondsRef.current);
     const results = await retryRequest(() =>
-      getFilteredCommentsByEpisodeId(episode_id, safeSeconds),
+      getFilteredCommentsByEpisodeId(episodeId, safeSeconds),
     );
     mergeIntoBuffer(results);
   };
@@ -92,7 +92,7 @@ export default function CommentsSocket(props) {
     const handleNewComment = (newComment) => {
       console.log(newComment);
 
-      if (newComment.episode_id === episode_id) {
+      if (newComment.episode_id === episodeId) {
         const isOwnComment = newComment.user_id === loggedInUser.user_id;
 
         const differenceTime = Math.abs(
@@ -113,33 +113,33 @@ export default function CommentsSocket(props) {
     return () => {
       socket.off("comment:new", handleNewComment);
     };
-  }, [episode_id]);
+  }, [episodeId]);
 
   // DONT CHANGE ABOVE FOR NOW
 
   // When video is at t=0 and paused, fetch all comments for the episode
   useEffect(() => {
-    if (episode_id) {
+    if (episodeId) {
       if (currentSeconds === 0 && !isPlaying) {
         const fetchAllComments = async () => {
           const result = await retryRequest(() =>
-            getCommentsByEpisodeId(episode_id),
+            getCommentsByEpisodeId(episodeId),
           );
           setComments(result);
         };
         fetchAllComments();
       }
     }
-  }, [currentSeconds, isPlaying, episode_id]);
+  }, [currentSeconds, isPlaying, episodeId]);
 
   //scrubbing pattern
   useEffect(() => {
-    if (episode_id && !isScrubbing) {
+    if (episodeId && !isScrubbing) {
       const safeSeconds = Math.floor(currentSecondsRef.current);
 
       const fetchCommentsByTime = async () => {
         const result = await retryRequest(() =>
-          getFilteredCommentsByEpisodeId(episode_id, safeSeconds),
+          getFilteredCommentsByEpisodeId(episodeId, safeSeconds),
         );
         const existingIds = new Set(bufferRef.current.map((c) => c.comment_id));
 
@@ -166,7 +166,7 @@ export default function CommentsSocket(props) {
   // while playing, 30s polling starts
   // Pre-fetches comments 3 mins ahead into a buffer; never sets comments directly
   useEffect(() => {
-    if (episode_id) {
+    if (episodeId) {
       if (isPlaying && !isScrubbing) {
         const interval = setInterval(fetchAhead, 30000);
         // Reset buffer when playback starts from zero
@@ -179,7 +179,7 @@ export default function CommentsSocket(props) {
         return () => clearInterval(interval);
       }
     }
-  }, [isPlaying, isScrubbing, episode_id]);
+  }, [isPlaying, isScrubbing, episodeId]);
 
   // reveal buffered comments in real time ──────────────────
   // Runs every second because of ; drip-feeds buffered comments whose timestamp is now due

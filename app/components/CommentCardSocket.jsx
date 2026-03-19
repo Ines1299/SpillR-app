@@ -49,6 +49,11 @@ export default function CommentCardSocket(props) {
   const [deletePressed, setDeletePressed] = useState(false);
   const [spoilerPressed, setSpoilerPressed] = useState(false);
   const [spoilerRevealed, setSpoilerRevealed] = useState(false);
+  const islive = isLive ? "live" : "replay";
+  const actor = username === loggedInUser.username ? "you" : "";
+  const meta = type
+    ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number}`
+    : `posted in ${islive}`;
 
   const handleToggleReplies = () => {
     if (!isChat) return;
@@ -96,13 +101,6 @@ export default function CommentCardSocket(props) {
     reply: "replied in: ",
     reaction: "reacted in: ",
   };
-
-  const islive = isLive ? "live" : "replay";
-
-  const actor = username === loggedInUser.username ? "you" : "";
-  const meta = type
-    ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number}`
-    : `posted in ${islive}`;
 
   // DO NOT CHANGE BELOW
 
