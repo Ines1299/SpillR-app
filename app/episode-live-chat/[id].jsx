@@ -8,7 +8,7 @@ import {
   ImageBackground,
 } from "react-native";
 import { useLocalSearchParams, useNavigation, Stack } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { getEpisodeById } from "../../utils/utilsFunctions";
 import { cleanText } from "../../utils/cleanText";
@@ -21,6 +21,7 @@ import PostBox from "../components/PostComment.jsx";
 import PollInput from "../components/PollInput.jsx";
 import socket from "../../socket/connection";
 import { EpisodeProvider } from "../../context/Episode";
+import { UserContext } from "../../context/User.jsx";
 
 export default function LiveChatPage() {
   const { id, showName, seasonNumber } = useLocalSearchParams();
@@ -35,6 +36,9 @@ export default function LiveChatPage() {
   const [scrubSwitch, setScrubSwitch] = useState(false);
   const [showPost, setShowPost] = useState(false);
   const [showPollInput, setShowPollInput] = useState(false);
+  const { loggedInUser } = useContext(UserContext);
+  const { userId } = loggedInUser;
+
   useEffect(() => {
     async function loadEpisode() {
       const data = await getEpisodeById(id);
@@ -48,14 +52,14 @@ export default function LiveChatPage() {
   useEffect(() => {
     if (!socket.connected) {
       socket.connect();
-      socket.emit("room:join", id);
-      console.log(`socket connected and joined room ${id}`);
+      socket.emit("room:join", { id, userId });
+      console.log(`socket connected and ${userId} joined room ${id}`);
     }
     return () => {
       if (socket.connected) {
-        socket.emit("room:leave", id);
+        socket.emit("room:leave", { id, userId });
         socket.off("comment:new");
-        console.log(`socket left room ${id}`);
+        console.log(`socket ${userId} left room ${id}`);
         socket.disconnect();
       }
     };
@@ -136,7 +140,7 @@ export default function LiveChatPage() {
               </Text>
             </View>
             <View styles={{ height: 220, justifyContent: "center" }}>
-              <PollsList id={id} />
+              <PollsList />
             </View>
           </View>
 
