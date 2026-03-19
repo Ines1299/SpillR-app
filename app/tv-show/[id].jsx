@@ -124,29 +124,28 @@ export default function TvShowPage() {
                 {expanded ? "Read less" : "Read more"}
               </Text>
             </LinearGradient>
-            <TouchableOpacity
-              style={[
-                styles.editButton,
-                {
-                  borderColor: isSubscribed ? "#E500FF" : "#2663f4",
-                  backgroundColor: isSubscribed
-                    ? "rgba(229,0,255,0.15)"
-                    : "rgba(0,0,0,0.4)",
-                },
-              ]}
-              onPress={handleSubscribe}
-            >
-              <Text
-                style={[
-                  styles.buttonText,
-                  { color: isSubscribed ? "#E500FF" : "#2663f4" },
-                ]}
-              >
-                {isSubscribed ? "Subscribed" : "Subscribe"}
-              </Text>
-            </TouchableOpacity>
           </View>
-
+          <TouchableOpacity
+            style={[
+              styles.editButton,
+              {
+                borderColor: isSubscribed ? "#E500FF" : "#d8d7d7",
+                backgroundColor: isSubscribed
+                  ? "rgba(229,0,255,0.15)"
+                  : "rgba(0,0,0,0.4)",
+              },
+            ]}
+            onPress={handleSubscribe}
+          >
+            <Text
+              style={[
+                styles.buttonText,
+                { color: isSubscribed ? "#E500FF" : "#d8d7d7" },
+              ]}
+            >
+              {isSubscribed ? "Subscribed" : "Subscribe"}
+            </Text>
+          </TouchableOpacity>
           <Dropdown
             name={show.name}
             seasons={seasons}
@@ -160,21 +159,20 @@ export default function TvShowPage() {
 
 const styles = StyleSheet.create({
   editButton: {
-    position: "absolute",
-    top: 130,
-    right: 25,
-    backgroundColor: "rgba(0,0,0,0.4)",
+    alignSelf: "flex-end",
+    marginRight: 16,
+    marginTop: 20,
+    marginBottom: -10,
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#2663f4",
+    borderWidth: 0.1,
   },
   buttonText: {
     textAlign: "center",
     color: "#2663f4",
     fontSize: 12,
-    fontWeight: 500,
+    fontWeight: 300,
   },
   imageContainer: {
     width: "100%",
