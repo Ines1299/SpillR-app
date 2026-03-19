@@ -29,7 +29,6 @@ export default function CommentCard(props) {
     body,
     user_id,
     created_at,
-    parent_username,
     type,
     tv_show_name,
     episode_number,
