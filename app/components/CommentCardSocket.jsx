@@ -49,9 +49,11 @@ export default function CommentCardSocket(props) {
   const [deletePressed, setDeletePressed] = useState(false);
   const [spoilerPressed, setSpoilerPressed] = useState(false);
   const [spoilerRevealed, setSpoilerRevealed] = useState(false);
-  const [reactionCount, setReactionCount] = useState(reactions_total);
-  const [Type_total, setType_total] = useState(reactionType_total);
-  const [lastReaction, setlastReaction] = useState("");
+  const islive = isLive ? "live" : "replay";
+  const actor = username === loggedInUser.username ? "you" : "";
+  const meta = type
+    ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number}`
+    : `posted in ${islive}`;
 
   const handleToggleReplies = () => {
     if (!isChat) return;
@@ -99,13 +101,6 @@ export default function CommentCardSocket(props) {
     reply: "replied in: ",
     reaction: "reacted in: ",
   };
-
-  const islive = isLive ? "live" : "replay";
-
-  const actor = username === loggedInUser.username ? "you" : "";
-  const meta = type
-    ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number}`
-    : `posted in ${islive}`;
 
   // DO NOT CHANGE BELOW
 
@@ -225,7 +220,7 @@ export default function CommentCardSocket(props) {
       {showReplies && (
         <>
           <View style={styles.threadLine} />
-          <RepliesList comment_id={comment_id} parent_username={username} />
+          <RepliesList commentId={comment_id} parentUsername={username} />
         </>
       )}
     </View>

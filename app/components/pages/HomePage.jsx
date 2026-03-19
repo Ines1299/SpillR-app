@@ -4,7 +4,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import HomePageHeader from "../HomePageHeader.jsx";
 import Trending from "../Trending.jsx";
 import FriendsAreWatching from "../FriendsAreWatching.jsx";
-import Comments from "../Comments.jsx";
+import CommentList from "../CommentList.jsx";
 import { getFeedComments } from "../../../utils/utilsFunctions.js";
 import { globalStyles } from "../../../styles/globalStyles.jsx";
 import { UserContext } from "../../../context/User.jsx";
@@ -77,7 +77,7 @@ export default function Home() {
           <HomePageHeader />
           <Trending />
           <FriendsAreWatching />
-          <Comments isHome={true} feedComments={feed} />
+          <CommentList isHome={true} comments={feed} />
           {loading && (
             <ActivityIndicator color="#fff" style={{ marginVertical: 20 }} />
           )}
