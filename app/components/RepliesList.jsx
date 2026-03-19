@@ -64,8 +64,11 @@ const RepliesList = ({ comment_id, parent_username }) => {
         <ScrollView
           contentContainerStyle={[styles.container, { paddingBottom: 100 }]}
         >
-          {replylist.map((reply) => (
-            <ReplyCard key={"reply-id-" + reply.reply_id} reply={reply} />
+          {replylist.map((reply, index) => (
+            <ReplyCard
+              key={"reply-id-" + index + reply.reply_id}
+              reply={reply}
+            />
           ))}
         </ScrollView>
 
