@@ -4,7 +4,7 @@ import socket from "../../socket/connection";
 import { useState } from "react";
 
 export default function PollItem({ poll, horizontal = true }) {
-  const [hasVoted, setHasVoted] = useState(null);
+  const [hasVoted, setHasVoted] = useState(false);
 
   const totalVotes = poll.poll_votes_count || 0;
   const option1Votes = poll.poll_field_1_count || 0;
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
   },
 
   buttonPressed: {
-    opacity: 0.75,
+    opacity: 0.5,
     transform: [{ scale: 0.99 }],
   },
 
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
   },
 
   voted: {
-    opacity: 0.9,
+    opacity: 0.6,
     borderColor: "purple",
   },
 
