@@ -108,7 +108,11 @@ const useSocketComments = (
           );
           setComments(result);
         };
-        fetchAllComments();
+        try {
+          fetchAllComments();
+        } catch {
+          throw new Error("Failed to fetch comments");
+        }
       }
     }
   }, [currentSeconds, isPlaying, episodeId]);
