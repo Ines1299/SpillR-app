@@ -18,7 +18,7 @@ export default function CommentList(props) {
       {comments?.length > 0 ? (
         comments.map((comment, index) => (
           <View key={`${comment.comment_id},${index}`}>
-            {isChat ? (
+            {/* {isChat ? (
               <CommentCardSocket
                 avatar_url={comment.avatar_url}
                 username={comment.username}
@@ -46,14 +46,14 @@ export default function CommentList(props) {
                 isReply={comment.reply_id}
                 reactionType_total={comment.reactionType_total}
               />
-            ) : (
-              <CommentCard
-                comment={comment}
-                setComments={setComments}
-                isChat={isChat}
-                isHome={isHome}
-              />
-            )}
+            ) : (*/}
+            <CommentCard
+              comment={comment}
+              setComments={setComments}
+              isChat={isChat}
+              isHome={isHome}
+            />
+            {/* )}*/}
             <View style={styles.divider} />
           </View>
         ))

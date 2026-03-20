@@ -44,7 +44,7 @@ export default function CommentCard(props) {
     avatar_url,
     username: authorUsername,
   } = comment;
-
+  console.log(setComments);
   const tv_show_name = comment.tv_show_name || comment.name;
   const body = comment.body ? comment.body : emojiLookup(comment.reaction_type);
 
@@ -68,15 +68,20 @@ export default function CommentCard(props) {
   const router = useRouter();
 
   const handlePressedSpoiler = (comment_id) => {
-    console.log("instruction to mark as spoiler sent", comment_id);
-    socket.emit("spoiler:mark", comment_id);
-    setSpoilerPressed(!spoilerPressed);
-
-    setComments((prev) =>
-      prev.map((c) =>
-        c.comment_id === comment_id ? { ...c, is_spoiler: !c.is_spoiler } : c,
-      ),
-    );
+    if (setComments) {
+      socket.emit("spoiler:mark", comment_id);
+      setSpoilerPressed(!spoilerPressed);
+      setComments((prev) =>
+        prev.map((c) =>
+          c.comment_id === comment_id ? { ...c, is_spoiler: !c.is_spoiler } : c,
+        ),
+      );
+      console.log("instruction to mark as spoiler sent", comment_id);
+    } else {
+      console.log(
+        "setComments is not defined, cannot update comment spoiler status",
+      );
+    }
   };
 
   const handlePressDelete = (comment_id) => {
@@ -170,7 +175,7 @@ export default function CommentCard(props) {
     : `posted in ${islive}`;
 
   useEffect(() => {
-    if (authorUsername && authorAvatarUrl) return;
+    if (authorUsername && avatar_url) return;
     const fetchUser = async () => {
       if (!user_id) return;
       const result = await getUserById(user_id);
@@ -215,9 +220,7 @@ export default function CommentCard(props) {
               )}
             </>
           ) : (
-            <Pressable
-              onPress={() => router.push(`/tv-show/${show.tv_show_id}`)}
-            >
+            <Pressable onPress={handleNavigateToShow}>
               <Text style={commentStyles.commentMeta}>{meta}</Text>
               {isSpoiler &&
               !spoilerRevealed &&
@@ -264,8 +267,15 @@ export default function CommentCard(props) {
               />
             </TouchableOpacity>
           ) : (
-            <TouchableOpacity style={styles.iconGroup}>
-              <SpoilerFlag width={22} height={22} />
+            <TouchableOpacity
+              style={styles.iconGroup}
+              onPress={() => handlePressedSpoiler(comment_id)}
+            >
+              <SpoilerFlag
+                width={22}
+                height={22}
+                stroke={isSpoiler ? "#e14444" : "#fff"}
+              />
             </TouchableOpacity>
           )}
         </View>
@@ -417,5 +427,10 @@ const styles = StyleSheet.create({
     width: 185,
     height: 140,
     borderRadius: 14,
+  },
+  spoilerWarning: {
+    color: "#8E8E8E",
+    fontStyle: "italic",
+    fontSize: 14,
   },
 });
