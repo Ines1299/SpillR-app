@@ -185,7 +185,7 @@ export default function CommentCard(props) {
 
   const actor = username === loggedInUser.username ? "you" : "";
   const meta = type
-    ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number === null ? "speacial" : episode_number}`
+    ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number === null ? " special" : episode_number}`
     : `posted in ${islive}`;
 
   useEffect(() => {
