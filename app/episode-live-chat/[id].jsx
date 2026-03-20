@@ -50,19 +50,14 @@ export default function LiveChatPage() {
   }, [id]);
 
   useEffect(() => {
-    if (!socket.connected) {
-      socket.connect();
-      console.log(loggedInUser);
-      socket.emit("room:join", { episodeId: id, userId: user_id });
-      console.log(`socket connected and ${user_id} joined room ${id}`);
-    }
+    console.log(loggedInUser);
+    socket.emit("room:join", { episodeId: id, userId: user_id });
+    console.log(`socket connected and ${user_id} joined room ${id}`);
+
     return () => {
-      if (socket.connected) {
-        socket.emit("room:leave", { episodeId: id, userId: user_id });
-        socket.off("comment:new");
-        console.log(`socket ${user_id} left room ${id}`);
-        socket.disconnect();
-      }
+      socket.emit("room:leave", { episodeId: id, userId: user_id });
+      socket.off("comment:new");
+      console.log(`socket ${user_id} left room ${id}`);
     };
   }, [id]);
 

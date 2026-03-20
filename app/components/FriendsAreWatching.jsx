@@ -4,23 +4,23 @@ import FriendsAreWatchingCard from "./FriendsAreWatchingCard";
 import { globalStyles } from "../../styles/globalStyles";
 import { UserContext } from "../../context/User.jsx";
 import { useEffect, useState, useContext, useCallback } from "react";
-import { getUserById } from "../../utils/utilsFunctions.js";
+import { getUserByIdAPI } from "../../utils/utilsFunctions.js";
 import socket from "../../socket/connection.js";
 
 export default function FriendsAreWatching() {
   const { loggedInUser } = useContext(UserContext);
-  const { userId } = loggedInUser;
-  const [friendList, setFriendList] = useState([
-    "d4e5f6a7-b8c9-0123-defa-234567890123",
-  ]);
+  const { user_id } = loggedInUser;
+  const [friendList, setFriendList] = useState([]);
   const [roomStatus, setRoomStatus] = useState([]);
 
   useEffect(() => {
-    if (!userId) return;
+    console.log("loggedInUser:", loggedInUser);
+    console.log("userId:", user_id);
+    if (!user_id) return;
     const fetchUserObj = async () => {
       try {
-        const userObj = await getUserById(userId);
-        console.log(userObj);
+        const userObj = await getUserByIdAPI(user_id);
+        console.log("userObj fetched by api", userObj);
         const friends = userObj.friends;
 
         const userIds = friends.map((f) => f.friend_user_id);
@@ -33,7 +33,13 @@ export default function FriendsAreWatching() {
     };
 
     fetchUserObj();
-  }, [userId]);
+  }, [user_id]);
+
+  useEffect(() => {
+    if (friendList.length === 0) return;
+    socket.emit("room:load", friendList);
+    console.log("friendsList has been sent:", friendList);
+  }, [friendList]);
 
   useFocusEffect(
     useCallback(() => {
@@ -86,7 +92,7 @@ export default function FriendsAreWatching() {
         setRoomStatus((prev) =>
           prev.map((room) =>
             room.episodeId === episodeId
-              ? { ...room, friendsWatching: room.friendsWatching + 1 }
+              ? { ...room, friendsWatching: (room.friendsWatching || 0) + 1 }
               : room,
           ),
         );
@@ -102,9 +108,6 @@ export default function FriendsAreWatching() {
         );
       };
 
-      socket.connect();
-      console.log(`socket connected!!!!`);
-      socket.emit("room:load", friendList);
       socket.on("roomList:status", handleRoomStatus);
       console.log("2", roomStatus);
       socket.on("room:userIn", handleRoomUserIn);
@@ -118,10 +121,8 @@ export default function FriendsAreWatching() {
         socket.off("room:userOut", handleRoomUserOut);
         socket.off("friend:join", handleFriendJoin);
         socket.off("friend:leave", handleFriendLeave);
-        socket.disconnect();
-        console.log("socket deregietered!!!!");
       };
-    }, [friendList]),
+    }, []),
   );
 
   return (
