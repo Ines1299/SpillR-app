@@ -1,7 +1,21 @@
 import { View, Text, StyleSheet, Image } from "react-native";
 import { globalStyles } from "../../styles/globalStyles";
+import { getEpisodeById } from "../../utils/utilsFunctions.js";
+import { useState, useEffect } from "react";
 
-export default function FriendsAreWatchingCards() {
+export default function FriendsAreWatchingCards({
+  episodeId,
+  friendsWatching,
+  userWatching,
+}) {
+  const [episodeInfo, setEpisodeInfo] = useState({});
+  useEffect(() => {
+    const fetchEpisodeById = async () => {
+      const episode = await getEpisodeById(episodeId);
+      setEpisodeInfo(episode);
+    };
+    fetchEpisodeById();
+  }, []);
   return (
     <View>
       <Text
@@ -13,12 +27,15 @@ export default function FriendsAreWatchingCards() {
         Tv-Show
       </Text>
       <View style={styles.card}>
-        <Image
-          source={{ uri: "https://i.pravatar.cc/150?img=3" }}
-          style={styles.image}
-        ></Image>
+        {episodeInfo.episode_url && (
+          <Image
+            source={{ uri: episodeInfo.episode_url }}
+            style={styles.image}
+          ></Image>
+        )}
         <Text style={styles.cardText}>
-          3 friends and 200 others are watching
+          {friendsWatching} friends and {userWatching - friendsWatching} others
+          are watching
         </Text>
       </View>
     </View>

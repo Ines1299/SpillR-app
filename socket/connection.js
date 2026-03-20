@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
-
-const socket = io("https://spillr-be.onrender.com/", {
+import { url } from "../utils/constants.js";
+const socket = io(url, {
   transports: ["websocket"],
   autoConnect: false,
 });

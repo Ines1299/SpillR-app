@@ -6,8 +6,19 @@ import {
   Inter_500Medium,
   Inter_600SemiBold,
 } from "@expo-google-fonts/inter";
+import { useEffect } from "react";
+import socket from "../socket/connection.js";
 
 export default function RootLayout() {
+  useEffect(() => {
+    socket.connect();
+    console.log(`socket connected!!!!`);
+    return () => {
+      socket.disconnect();
+      console.log("socket deregietered!!!!");
+    };
+  }, []);
+
   const [fontsLoaded] = useFonts({
     Inter_400Regular,
     Inter_500Medium,

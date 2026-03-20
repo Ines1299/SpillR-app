@@ -8,7 +8,7 @@ import {
   ImageBackground,
 } from "react-native";
 import { useLocalSearchParams, useNavigation, Stack } from "expo-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { getEpisodeById } from "../../utils/utilsFunctions";
 import { cleanText } from "../../utils/cleanText";
@@ -21,6 +21,7 @@ import PostBox from "../components/PostComment.jsx";
 import PollInput from "../components/PollInput.jsx";
 import socket from "../../socket/connection";
 import { EpisodeProvider } from "../../context/Episode";
+import { UserContext } from "../../context/User.jsx";
 import useSocketComments from "../../hooks/useSocketComments.js";
 
 export default function LiveChatPage() {
@@ -36,6 +37,8 @@ export default function LiveChatPage() {
   const [scrubSwitch, setScrubSwitch] = useState(false);
   const [showPost, setShowPost] = useState(false);
   const [showPollInput, setShowPollInput] = useState(false);
+  const { loggedInUser } = useContext(UserContext);
+  const { user_id } = loggedInUser;
 
   const { comments, setComments } = useSocketComments(
     id,
@@ -56,18 +59,14 @@ export default function LiveChatPage() {
   }, [id]);
 
   useEffect(() => {
-    if (!socket.connected) {
-      socket.connect();
-      socket.emit("room:join", id);
-      console.log(`socket connected and joined room ${id}`);
-    }
+    console.log(loggedInUser);
+    socket.emit("room:join", { episodeId: id, userId: user_id });
+    console.log(`socket connected and ${user_id} joined room ${id}`);
+
     return () => {
-      if (socket.connected) {
-        socket.emit("room:leave", id);
-        socket.off("comment:new");
-        console.log(`socket left room ${id}`);
-        socket.disconnect();
-      }
+      socket.emit("room:leave", { episodeId: id, userId: user_id });
+      socket.off("comment:new");
+      console.log(`socket ${user_id} left room ${id}`);
     };
   }, [id]);
 
@@ -205,7 +204,7 @@ export default function LiveChatPage() {
               </Text>
             </View>
             <View styles={{ height: 220, justifyContent: "center" }}>
-              <PollsList id={id} />
+              <PollsList />
             </View>
           </View>
 
