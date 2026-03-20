@@ -82,18 +82,21 @@ export default function PollsList({ id, horizontal = true }) {
 
   if (loading) return <Text style={styles.subtitle}>Loading polls...</Text>;
   if (error) return <Text>{error}</Text>;
-  // if (polls.length === 0)
-  //   return (
-  //     <Text style={styles.subtitle}>
-  //       Polls will appear here if added ... so anything you want to ask chat?
-  //     </Text>
-  //   );
+  if (polls.length === 0)
+    return (
+      <View>
+        <Text style={styles.title}>Polls</Text>
+        <Text style={styles.subtitle}>
+          No polls yet ... click the + button to write the first!
+        </Text>
+      </View>
+    );
 
   if (horizontal) {
     return (
       <View>
         <Text style={styles.title}>Polls</Text>
-        <PollInput episode_id={id} />
+
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -118,7 +121,6 @@ export default function PollsList({ id, horizontal = true }) {
             <PollItem poll={poll} horizontal={horizontal} />
           </View>
         ))}
-        <PollInput episode_id={id} />
       </View>
     </View>
   );
@@ -145,7 +147,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   subtitle: {
-    marginTop: 0,
+    marginTop: 20,
     marginLeft: 22,
     marginRight: 25,
     marginBottom: 0,
