@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import PollItem from "./PollItem";
 import { globalStyles } from "../../styles/globalStyles";
 import socket from "../../socket/connection";
+import PollInput from "./PollInput";
 
 // const polls = [
 //   {
@@ -45,7 +46,7 @@ export default function PollsList({ id, horizontal = true }) {
         );
 
         const data = await res.json();
-        console.log(data);
+        // console.log(data);
 
         setPolls(data.polls);
       } catch (err) {
@@ -62,24 +63,37 @@ export default function PollsList({ id, horizontal = true }) {
 
   useEffect(() => {
     function handlePollUpdate(updatedPolls) {
-      console.log("poll:update received", updatedPolls);
+      // console.log("poll:update received", updatedPolls);
       setPolls(updatedPolls);
     }
 
+    function handlePollError(err) {
+      console.log(`Poll error received: ${err}`);
+    }
+
     socket.on("poll:update", handlePollUpdate);
+    socket.on("poll:error", handlePollError);
 
     return () => {
       socket.off("poll:update", handlePollUpdate);
+      socket.off("poll:error", handlePollError);
     };
   }, []);
 
-  if (loading) return <Text>Loading polls...</Text>;
+  if (loading) return <Text style={styles.subtitle}>Loading polls...</Text>;
   if (error) return <Text>{error}</Text>;
+  // if (polls.length === 0)
+  //   return (
+  //     <Text style={styles.subtitle}>
+  //       Polls will appear here if added ... so anything you want to ask chat?
+  //     </Text>
+  //   );
 
   if (horizontal) {
     return (
       <View>
         <Text style={styles.title}>Polls</Text>
+
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
@@ -88,6 +102,9 @@ export default function PollsList({ id, horizontal = true }) {
           {polls.map((poll) => (
             <PollItem key={poll.poll_id} poll={poll} horizontal={horizontal} />
           ))}
+          <View style={styles.pollInputWrapper}>
+            <PollInput episode_id={id} />
+          </View>
         </ScrollView>
       </View>
     );
@@ -97,18 +114,24 @@ export default function PollsList({ id, horizontal = true }) {
   return (
     <View>
       <Text>Polls</Text>
+      {polls.length === 0 && <PollInput episode_id={id} />}
       <View style={styles.pollsList}>
         {polls.map((poll) => (
           <View key={poll.poll_id} style={globalStyles.gridItem}>
-            <PollItem poll={polls} horizontal={horizontal} />
+            <PollItem poll={poll} horizontal={horizontal} />
           </View>
         ))}
+        <PollInput episode_id={id} />
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  pollInputWrapper: {
+    width: 300,
+    height: 200,
+  },
   pollsList: {
     alignItems: "center",
     width: "100%",
@@ -127,5 +150,13 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     fontSize: 20,
     color: "white",
+  },
+  subtitle: {
+    marginTop: 0,
+    marginLeft: 22,
+    marginRight: 25,
+    marginBottom: 0,
+    fontSize: 13,
+    color: "#8E8E8E",
   },
 });

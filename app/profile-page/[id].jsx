@@ -10,7 +10,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { commentStyles } from "../../styles/commentStyles";
-import Comments from "../components/Comments";
+import CommentList from "../components/CommentList";
 import ProfileHeader from "../components/ProfileHeader";
 import SubLi from "../components/SubscribedLi";
 import {
@@ -65,7 +65,7 @@ export default function ProfilePage() {
 
           <Text style={styles.sectionTitle}>Comments and replies</Text>
 
-          <Comments userComments={userComments} isProfile={true} />
+          <CommentList comments={userComments} isProfile={true} />
         </View>
       </ScrollView>
     </View>

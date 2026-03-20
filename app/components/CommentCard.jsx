@@ -20,40 +20,85 @@ import SpoilerFlag from "../../assets/SpoilerFlag.jsx";
 import RepliesList from "./RepliesList.jsx";
 import EmojiPicker from "./EmojiPicker.jsx";
 import { getTvShowByName } from "../../utils/utilsFunctions.js";
+import socket from "../../socket/connection.js";
 
 //comment flow for a single comment card, complete with how long ago it was
 // posted relative to now, who posted it and a space for other meta data like where it was posted
 export default function CommentCard(props) {
+  const { comment, setComments, isChat, isHome } = props;
   const {
     comment_id,
-    body,
     user_id,
     created_at,
-    type,
-    tv_show_name,
+    Commenttype: type,
     episode_number,
     season_number,
     runtime_seconds,
-    isHome,
-    isChat,
-    isLive,
+    is_live: isLive,
     reactions_total,
     reactionType_total,
     repliesTotal,
     isReaction,
     isReply,
-  } = props;
+    is_spoiler: isSpoiler,
+    avatar_url,
+    username: authorUsername,
+  } = comment;
+  const tv_show_name = comment.tv_show_name || comment.name;
+  const body = comment.body ? comment.body : emojiLookup(comment.reaction_type);
 
-  const [username, setUserName] = useState(null);
-  const [userurl, setUserurl] = useState(null);
   const { loggedInUser } = useContext(UserContext);
+
+  const [username, setUserName] = useState(authorUsername || null);
+  const [userurl, setUserurl] = useState(avatar_url || null);
+  const [deletePressed, setDeletePressed] = useState(false);
+  const [reactionCount, setReactionCount] = useState(reactions_total);
+  const [Type_total, setType_total] = useState(reactionType_total);
+  const [lastReaction, setlastReaction] = useState("");
   const [relativeTime, setRelativeTime] = useState(
     created_at ? timeAgo(created_at) : "",
   );
   const [showReplies, setShowReplies] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [show, setShow] = useState(null);
+  const [spoilerPressed, setSpoilerPressed] = useState(false);
+  const [spoilerRevealed, setSpoilerRevealed] = useState(false);
+
   const router = useRouter();
+
+  const handlePressedSpoiler = (comment_id) => {
+    if (setComments) {
+      socket.emit("spoiler:mark", comment_id);
+      setSpoilerPressed(!spoilerPressed);
+      setComments((prev) =>
+        prev.map((c) =>
+          c.comment_id === comment_id ? { ...c, is_spoiler: !c.is_spoiler } : c,
+        ),
+      );
+      console.log("instruction to mark as spoiler sent", comment_id);
+    } else {
+      console.log(
+        "setComments is not defined, cannot update comment spoiler status",
+      );
+    }
+  };
+
+  const handlePressDelete = (comment_id) => {
+    if (isReply) return;
+    console.log("instruction to delete sent");
+    socket.emit("comment:delete", comment_id);
+    setDeletePressed(!deletePressed);
+
+    const removeComment = (comment_id) => {
+      console.log("remove func");
+      setComments((prev) => prev.filter((c) => c.comment_id !== comment_id));
+    };
+
+    removeComment(comment_id);
+
+    console.log("useEffect ran");
+    socket.on("comment:remove", removeComment);
+  };
 
   useEffect(() => {
     const fetchShow = async () => {
@@ -81,6 +126,39 @@ export default function CommentCard(props) {
 
   const handleReaction = (reactionType) => {
     console.log("reacted with:", reactionType);
+
+    if (lastReaction === "") {
+      socket.emit("reaction:add", {
+        reaction_type: reactionType,
+        comment_id,
+        episode_id: comment.episode_id,
+        reply_id: null,
+        runtime_seconds,
+        user_id: loggedInUser.user_id,
+      });
+      console.log(`added reaction ${reactionType}`);
+      setlastReaction(reactionType);
+      setReactionCount((prev) => prev + 1);
+      setType_total((prev) => ({
+        ...prev,
+        [`${reactionType}Total`]: prev[`${reactionType}Total`] + 1,
+      }));
+    } else if (lastReaction === reactionType) {
+      setlastReaction("");
+      setReactionCount((prev) => prev - 1);
+      setType_total((prev) => ({
+        ...prev,
+        [`${reactionType}Total`]: prev[`${reactionType}Total`] - 1,
+      }));
+    } else {
+      setlastReaction(reactionType);
+      setType_total((prev) => ({
+        ...prev,
+        [`${lastReaction}Total`]: prev[`${lastReaction}Total`] - 1,
+        [`${reactionType}Total`]: prev[`${reactionType}Total`] + 1,
+      }));
+      // reactionCount stays the same — still 1 reaction total
+    }
     setShowEmojiPicker(false);
   };
 
@@ -101,10 +179,11 @@ export default function CommentCard(props) {
 
   const actor = username === loggedInUser.username ? "you" : "";
   const meta = type
-    ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number}`
+    ? `${actor} ${actionMap[type]} ${tv_show_name} S${season_number} ep${episode_number === null ? "speacial" : episode_number}`
     : `posted in ${islive}`;
 
   useEffect(() => {
+    if (authorUsername && avatar_url) return;
     const fetchUser = async () => {
       if (!user_id) return;
       const result = await getUserById(user_id);
@@ -125,61 +204,106 @@ export default function CommentCard(props) {
         <View style={commentStyles.commentContent}>
           <View style={commentStyles.commentTopRow}>
             <Text style={commentStyles.commentUser}>@{username}</Text>
-            <Text style={commentStyles.commentTime}>{relativeTime}</Text>
+            {isChat ? (
+              <Text style={commentStyles.commentTime}>
+                {formatRuntime(runtime_seconds)}
+              </Text>
+            ) : (
+              <Text style={commentStyles.commentTime}>{relativeTime}</Text>
+            )}
           </View>
-          <Pressable onPress={() => router.push(`/tv-show/${show.tv_show_id}`)}>
-            <Text style={commentStyles.commentMeta}>{meta}</Text>
-            <Text style={commentStyles.commentText}>{body}</Text>
-          </Pressable>
+          {isChat ? (
+            <>
+              <Text style={commentStyles.commentMeta}>{meta}</Text>
+              {isSpoiler &&
+              !spoilerRevealed &&
+              user_id !== loggedInUser.user_id ? (
+                <TouchableOpacity onPress={() => setSpoilerRevealed(true)}>
+                  <Text style={styles.spoilerWarning}>
+                    ⚠️ Spoiler — tap to reveal
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <Text style={commentStyles.commentText}>{body}</Text>
+              )}
+            </>
+          ) : (
+            <Pressable onPress={handleNavigateToShow}>
+              <Text style={commentStyles.commentMeta}>{meta}</Text>
+              {isSpoiler &&
+              !spoilerRevealed &&
+              user_id !== loggedInUser.user_id ? (
+                <TouchableOpacity onPress={() => setSpoilerRevealed(true)}>
+                  <Text style={styles.spoilerWarning}>
+                    ⚠️ Spoiler — tap to reveal
+                  </Text>
+                </TouchableOpacity>
+              ) : (
+                <Text style={commentStyles.commentText}>{body}</Text>
+              )}
+            </Pressable>
+          )}
         </View>
       </View>
-      {!isReaction && (
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={styles.iconGroup}
-            onPress={() => setShowEmojiPicker(!showEmojiPicker)}
-          >
-            <Text style={styles.iconCount}>{reactions_total}</Text>
-            <Reaction width={22} height={22} />
-          </TouchableOpacity>
-
-          {!isReply && (
+      {
+        // isChat &&
+        !isReaction && (
+          <View style={styles.buttonRow}>
             <TouchableOpacity
               style={styles.iconGroup}
-              onPress={handleToggleReplies}
+              onPress={() => setShowEmojiPicker(!showEmojiPicker)}
             >
-              <Text style={styles.iconCount}>{repliesTotal}</Text>
-              <Replies width={22} height={22} />
+              <Text style={styles.iconCount}>{reactionCount}</Text>
+              <Reaction width={22} height={22} />
             </TouchableOpacity>
-          )}
 
-          {user_id === loggedInUser.user_id ? (
-            <TouchableOpacity style={styles.iconGroup}>
-              <Delete
-                width={22}
-                height={22}
-                style={{ transform: [{ translateY: 2 }] }}
-              />
-            </TouchableOpacity>
-          ) : (
-            <TouchableOpacity style={styles.iconGroup}>
-              <SpoilerFlag width={22} height={22} />
-            </TouchableOpacity>
-          )}
-        </View>
-      )}
+            {!isReply && (
+              <TouchableOpacity
+                style={styles.iconGroup}
+                onPress={handleToggleReplies}
+              >
+                <Text style={styles.iconCount}>{repliesTotal}</Text>
+                <Replies width={22} height={22} />
+              </TouchableOpacity>
+            )}
+
+            {user_id === loggedInUser.user_id ? (
+              <TouchableOpacity style={styles.iconGroup}>
+                <Delete
+                  width={22}
+                  height={22}
+                  style={{ transform: [{ translateY: 2 }] }}
+                  onPress={() => handlePressDelete(comment_id)}
+                />
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                style={styles.iconGroup}
+                onPress={() => handlePressedSpoiler(comment_id)}
+              >
+                <SpoilerFlag
+                  width={22}
+                  height={22}
+                  stroke={isSpoiler ? "#e14444" : "#fff"}
+                />
+              </TouchableOpacity>
+            )}
+          </View>
+        )
+      }
 
       {showEmojiPicker && (
         <EmojiPicker
-          reactionType_total={reactionType_total}
+          reactionType_total={Type_total}
           onSelect={handleReaction}
+          lastReaction={lastReaction}
         />
       )}
 
       {showReplies && (
         <>
           <View style={styles.threadLine} />
-          <RepliesList comment_id={comment_id} parentUsername={username} />
+          <RepliesList commentId={comment_id} parentUsername={username} />
         </>
       )}
     </View>
@@ -314,5 +438,10 @@ const styles = StyleSheet.create({
     width: 185,
     height: 140,
     borderRadius: 14,
+  },
+  spoilerWarning: {
+    color: "#8E8E8E",
+    fontStyle: "italic",
+    fontSize: 14,
   },
 });

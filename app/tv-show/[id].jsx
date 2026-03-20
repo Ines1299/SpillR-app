@@ -5,6 +5,7 @@ import {
   StyleSheet,
   SafeAreaView,
   ScrollView,
+  TouchableOpacity,
 } from "react-native";
 import { useLocalSearchParams, useNavigation } from "expo-router";
 import { useEffect, useState } from "react";
@@ -26,6 +27,11 @@ export default function TvShowPage() {
   const navigation = useNavigation();
   const [show, setShow] = useState({});
   const [expanded, setExpanded] = useState(false);
+  const [isSubscribed, setIsSubscribed] = useState(false);
+
+  const handleSubscribe = () => {
+    setIsSubscribed(!isSubscribed);
+  };
 
   useEffect(() => {
     async function loadData() {
@@ -119,7 +125,27 @@ export default function TvShowPage() {
               </Text>
             </LinearGradient>
           </View>
-
+          <TouchableOpacity
+            style={[
+              styles.editButton,
+              {
+                borderColor: isSubscribed ? "#E500FF" : "#d8d7d7",
+                backgroundColor: isSubscribed
+                  ? "rgba(229,0,255,0.15)"
+                  : "rgba(0,0,0,0.4)",
+              },
+            ]}
+            onPress={handleSubscribe}
+          >
+            <Text
+              style={[
+                styles.buttonText,
+                { color: isSubscribed ? "#E500FF" : "#d8d7d7" },
+              ]}
+            >
+              {isSubscribed ? "Subscribed" : "Subscribe"}
+            </Text>
+          </TouchableOpacity>
           <Dropdown
             name={show.name}
             seasons={seasons}
@@ -132,6 +158,22 @@ export default function TvShowPage() {
 }
 
 const styles = StyleSheet.create({
+  editButton: {
+    alignSelf: "flex-end",
+    marginRight: 16,
+    marginTop: 20,
+    marginBottom: -10,
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 20,
+    borderWidth: 0.1,
+  },
+  buttonText: {
+    textAlign: "center",
+    color: "#2663f4",
+    fontSize: 12,
+    fontWeight: 300,
+  },
   imageContainer: {
     width: "100%",
     height: 350,

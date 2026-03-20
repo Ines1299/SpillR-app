@@ -87,7 +87,7 @@ export default function Dropdown({ name, seasons, tv_show_img_url }) {
 
 const styles = StyleSheet.create({
   container: {
-    top: 50,
+    top: 0,
     width: "100%",
     zIndex: 999,
     marginLeft: 0,

@@ -9,7 +9,7 @@ export default function UserResultCard({ user }) {
       style={styles.card}
       onPress={() =>
         router.push({
-          pathname: "/profilepage/[id]",
+          pathname: "/profile-page/[id]",
           params: { id: user.user_id },
         })
       }

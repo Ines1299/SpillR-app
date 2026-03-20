@@ -15,13 +15,14 @@ import { cleanText } from "../../utils/cleanText";
 import PollsList from "../components/PollsList.jsx";
 import EpisodeTimelineScrubber from "../components/EpisodeTimelineScrubber";
 import FloatingButton from "../components/FloatingButton";
-import CommentsSocket from "../components/CommentsSocket.jsx";
+import CommentList from "../components/CommentList";
 import { globalStyles } from "../../styles/globalStyles";
 import PostBox from "../components/PostComment.jsx";
 import PollInput from "../components/PollInput.jsx";
 import socket from "../../socket/connection";
 import { EpisodeProvider } from "../../context/Episode";
 import { UserContext } from "../../context/User.jsx";
+import useSocketComments from "../../hooks/useSocketComments.js";
 
 export default function LiveChatPage() {
   const { id, showName, seasonNumber } = useLocalSearchParams();
@@ -39,11 +40,19 @@ export default function LiveChatPage() {
   const { loggedInUser } = useContext(UserContext);
   const { user_id } = loggedInUser;
 
+  const { comments, setComments } = useSocketComments(
+    id,
+    currentSeconds,
+    isPlaying,
+    isScrubbing,
+    scrubSwitch,
+  );
+
   useEffect(() => {
     async function loadEpisode() {
       const data = await getEpisodeById(id);
       setEpisode(data);
-      setEpisodeRuntime(data.runtime_total);
+      setEpisodeRuntime(data.runtime_total ?? 60);
     }
 
     loadEpisode();
@@ -62,6 +71,65 @@ export default function LiveChatPage() {
   }, [id]);
 
   if (!episode) return <Text>Loading...</Text>;
+
+  const isUpcoming =
+    episode.release_date &&
+    new Date(`${episode.release_date}T${episode.release_time ?? "00:00:00"}`) >
+      new Date();
+  if (isUpcoming) {
+    const formattedAirtime = new Date(
+      `${episode.release_date}T${episode.release_time ?? "00:00:00"}`,
+    ).toLocaleString("en-GB", {
+      weekday: "long",
+      day: "numeric",
+      month: "long",
+      hour: "2-digit",
+      minute: "2-digit",
+    });
+
+    return (
+      <View style={{ flex: 1, backgroundColor: "#101010" }}>
+        <Stack.Screen
+          options={{
+            headerTransparent: true,
+            headerTitle: "",
+            headerTintColor: "#FFFFFF",
+            headerStyle: { backgroundColor: "transparent" },
+            headerShadowVisible: false,
+          }}
+        />
+        <ImageBackground
+          source={{ uri: episode.episode_url }}
+          style={styles.heroImage}
+        >
+          <LinearGradient
+            colors={[
+              "rgba(102,102,102,0)",
+              "rgba(16,16,16,0.90)",
+              "rgba(16,16,16,1)",
+            ]}
+            locations={[0.01, 0.7, 1]}
+            style={styles.heroOverlay}
+          >
+            <Text style={styles.title}>
+              S{seasonNumber} Ep:{" "}
+              {!episode.episode_number
+                ? "Season special"
+                : episode.episode_number}
+            </Text>
+            <Text style={styles.showName}>{showName}</Text>
+          </LinearGradient>
+        </ImageBackground>
+        <View style={styles.paragraph}>
+          <Text style={styles.upcomingTitle}>Room not open yet</Text>
+          <Text style={styles.upcomingBody}>
+            Fan of {showName}? Come back on {formattedAirtime} to join the live
+            watchparty.
+          </Text>
+        </View>
+      </View>
+    );
+  }
 
   const synopsis = cleanText(episode.synopsis);
 
@@ -140,14 +208,10 @@ export default function LiveChatPage() {
             </View>
           </View>
 
-          <CommentsSocket
-            setScrubSwitch={setScrubSwitch}
-            scrubSwitch={scrubSwitch}
-            currentSeconds={currentSeconds}
-            episode_id={episode.episode_id}
+          <CommentList
+            comments={comments}
+            setComments={setComments}
             isChat={true}
-            isPlaying={isPlaying}
-            isScrubbing={isScrubbing}
             isHome={false}
           />
         </ScrollView>
@@ -174,6 +238,17 @@ export default function LiveChatPage() {
 }
 
 const styles = StyleSheet.create({
+  upcomingTitle: {
+    color: "white",
+    fontSize: 20,
+    fontWeight: "700",
+    marginBottom: 8,
+  },
+  upcomingBody: {
+    color: "#8E8E8E",
+    fontSize: 15,
+    lineHeight: 22,
+  },
   postBar: {
     position: "absolute",
     width: "80%",

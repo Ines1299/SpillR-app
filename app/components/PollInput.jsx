@@ -11,14 +11,28 @@ import { useContext } from "react";
 import { UserContext } from "../../context/User";
 import { useState, useEffect } from "react";
 import Send from "../../assets/send-button.jsx";
+import socket from "../../socket/connection.js";
 
 const PollInput = ({ comment_id, episode_id, style }) => {
   const { loggedInUser } = useContext(UserContext);
-  const [input, setInput] = useState("");
+  const [question, setQuestion] = useState("");
+  const [option1, setOption1] = useState("");
+  const [option2, setOption2] = useState("");
 
   const handleSubmit = () => {
-    console.log(input);
-    setInput("");
+    if (!question || !option1 || !option2) return;
+
+    socket.emit("poll:create", {
+      poll_name: question,
+      field_1: option1,
+      field_2: option2,
+      episode_id,
+      user_id: loggedInUser.user_id,
+    });
+
+    setQuestion("");
+    setOption1("");
+    setOption2("");
   };
 
   return (
@@ -29,29 +43,32 @@ const PollInput = ({ comment_id, episode_id, style }) => {
       <View style={styles.inputWrapper}>
         <View style={{ position: "relative" }}>
           <TextInput
-            placeholder="What do you want to ask chat?"
+            placeholder="Ask chat something..."
             placeholderTextColor="#8E8E8E"
-            value={input}
-            onChangeText={setInput}
+            value={question}
+            onChangeText={setQuestion}
             style={styles.input}
           />
+
           <TouchableOpacity style={styles.sendButton} onPress={handleSubmit}>
             <Send width={20} height={20} />
           </TouchableOpacity>
         </View>
+
         <View style={styles.pollOptionsRow}>
           <TextInput
             placeholder="Option 1"
             placeholderTextColor="#8E8E8E"
-            value={input}
-            onChangeText={setInput}
+            value={option1}
+            onChangeText={setOption1}
             style={[styles.input, styles.pollOption]}
           />
+
           <TextInput
             placeholder="Option 2"
             placeholderTextColor="#8E8E8E"
-            value={input}
-            onChangeText={setInput}
+            value={option2}
+            onChangeText={setOption2}
             style={[styles.input, styles.pollOption]}
           />
         </View>
@@ -72,14 +89,16 @@ const styles = StyleSheet.create({
   container: {
     borderRadius: 30,
     paddingLeft: 16,
-    marginTop: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 10,
+    marginTop: 0,
+    paddingVertical: 0,
+    paddingHorizontal: 0,
     paddingTop: 15,
     paddingBottom: 15,
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
+    width: 300,
+    height: 200,
   },
   avatar: {
     width: 35,
