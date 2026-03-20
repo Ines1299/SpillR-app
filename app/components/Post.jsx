@@ -14,13 +14,13 @@ import { UserContext } from "../../context/User";
 import { EpisodeContext } from "../../context/Episode";
 import socket from "../../socket/connection.js";
 
-const Post = ({ comment_id, runtime_seconds, style }) => {
+const Post = ({ commentId, runtime_seconds, style }) => {
   const { loggedInUser } = useContext(UserContext);
   const { episodeId } = useContext(EpisodeContext);
   const [input, setInput] = useState("");
 
   const reply = {
-    comment_id: comment_id,
+    comment_id: commentId,
     episode_id: episodeId,
     user_id: loggedInUser.user_id,
     runtime_seconds: 1,
