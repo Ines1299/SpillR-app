@@ -275,7 +275,7 @@ export default function CommentCard(props) {
               </TouchableOpacity>
             )}
 
-            {user_id === loggedInUser.user_id ? (
+            {user_id === loggedInUser.user_id && setComments ? (
               <TouchableOpacity style={styles.iconGroup}>
                 <Delete
                   width={22}
