@@ -21,7 +21,6 @@ import RepliesList from "./RepliesList.jsx";
 import EmojiPicker from "./EmojiPicker.jsx";
 import emojiLookup from "../../utils/emojiLookupObject";
 import { getTvShowByName } from "../../utils/utilsFunctions.js";
-import emojiLookup from "../../utils/emojiLookupObject.js";
 import socket from "../../socket/connection.js";
 
 //comment flow for a single comment card, complete with how long ago it was
