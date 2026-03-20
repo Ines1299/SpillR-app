@@ -11,7 +11,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { commentStyles } from "../../../styles/commentStyles";
-import Comments from "../Comments";
+import CommentList from "../CommentList";
 import ProfileHeader from "../ProfileHeader";
 import SubLi from "../SubscribedLi";
 import {
@@ -50,6 +50,16 @@ export default function UserPage() {
     } else {
       obj.Commenttype = "comment";
     }
+    if (!obj.reactionType_total) {
+      obj.reactionType_total = {
+        angryTotal: 0,
+        laughingTotal: 0,
+        sadTotal: 0,
+        fireTotal: 0,
+        deadTotal: 0,
+        heartTotal: 0,
+      };
+    }
   }
   const firstName = loggedInUser.name.split(" ")[0];
   return (
@@ -64,7 +74,7 @@ export default function UserPage() {
 
           <Text style={styles.sectionTitle}>Comments and replies</Text>
 
-          <Comments isUser={true} userComments={userComments} />
+          <CommentList isUser={true} comments={userComments} />
         </View>
       </ScrollView>
     </View>
