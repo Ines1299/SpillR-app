@@ -62,7 +62,7 @@ export default function CommentCard(props) {
   const [showReplies, setShowReplies] = useState(false);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
   const [show, setShow] = useState(null);
-  const [spoilerPressed, setSpoilerPressed] = useState(false);
+
   const [spoilerRevealed, setSpoilerRevealed] = useState(false);
 
   const router = useRouter();
@@ -70,10 +70,9 @@ export default function CommentCard(props) {
   const handlePressedSpoiler = (comment_id) => {
     if (setComments) {
       socket.emit("spoiler:mark", comment_id);
-      setSpoilerPressed(!spoilerPressed);
       setComments((prev) =>
         prev.map((c) =>
-          c.comment_id === comment_id ? { ...c, is_spoiler: !c.is_spoiler } : c,
+          c.comment_id === comment_id ? { ...c, is_spoiler: true } : c,
         ),
       );
       console.log("instruction to mark as spoiler sent", comment_id);
@@ -93,6 +92,21 @@ export default function CommentCard(props) {
     socket.on("comment:remove", removeComment);
     return () => {
       socket.off("comment:remove", removeComment);
+    };
+  }, []);
+
+  const handleSpoilerMarked = (comment_id) => {
+    setComments((prev) =>
+      prev.map((c) =>
+        c.comment_id === comment_id ? { ...c, is_spoiler: true } : c,
+      ),
+    );
+  };
+
+  useEffect(() => {
+    socket.on("spoiler:marked", handleSpoilerMarked);
+    return () => {
+      socket.off("spoiler:marked", handleSpoilerMarked);
     };
   }, []);
 

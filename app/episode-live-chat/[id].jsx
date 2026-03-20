@@ -59,13 +59,12 @@ export default function LiveChatPage() {
   }, [id]);
 
   useEffect(() => {
-    console.log(loggedInUser);
+    console.log("current logged in user:", loggedInUser);
     socket.emit("room:join", { episodeId: id, userId: user_id });
     console.log(`socket connected and ${user_id} joined room ${id}`);
 
     return () => {
       socket.emit("room:leave", { episodeId: id, userId: user_id });
-      socket.off("comment:new");
       console.log(`socket ${user_id} left room ${id}`);
     };
   }, [id]);
