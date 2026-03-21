@@ -59,11 +59,11 @@ export default function Home() {
   for (let i = 0; i < feed.length; i++) {
     const obj = feed[i];
     if (obj.reaction_id) {
-      obj.Commenttype = "reaction";
+      obj.commentType = "reaction";
     } else if (obj.reply_id) {
-      obj.Commenttype = "reply";
+      obj.commentType = "reply";
     } else {
-      obj.Commenttype = "comment";
+      obj.commentType = "comment";
     }
   }
   return (

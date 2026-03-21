@@ -45,11 +45,11 @@ export default function ProfilePage() {
     const obj = userComments[i];
 
     if (obj.reaction_id !== null) {
-      obj.Commenttype = "reaction";
+      obj.commentType = "reaction";
     } else if (obj.reply_id !== null) {
-      obj.Commenttype = "reply";
+      obj.commentType = "reply";
     } else {
-      obj.Commenttype = "comment";
+      obj.commentType = "comment";
     }
   }
 
