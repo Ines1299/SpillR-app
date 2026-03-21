@@ -58,15 +58,10 @@ export async function getSeasonByID(seasonId) {
 }
 
 export async function getEpisodesBySeasonId(seasonId) {
-  let { data, error } = await supabase
-    .from("episodes")
-    .select("*")
-    .eq("season_id", seasonId)
-    .order("episode_number", { ascending: false });
-  if (error) {
-    throw error;
-  }
-  return data;
+  const response = await axios.get(
+    `https://spillr-be.onrender.com/api/seasons/${seasonId}/episodes`,
+  );
+  return response.data.episodes;
 }
 
 export async function getSeasonsAndEpisodesByShowName(showName) {

@@ -7,6 +7,7 @@ export default function EpisodeCard({
   seasonNumber,
   showName,
   tv_show_img_url,
+  isPremier,
 }) {
   const router = useRouter();
   return (
@@ -23,15 +24,18 @@ export default function EpisodeCard({
     >
       <View style={styles.episodeCard}>
         <View key={episode.episode_id}>
-          <Image
-            style={{ width: "100%", aspectRatio: 1, borderRadius: 6 }}
-            source={{
-              uri:
-                episode.episode_url ||
-                selectedSeason.season_img_url ||
-                tv_show_img_url,
-            }}
-          />
+          <View style={styles.imageContainer}>
+            <Image
+              style={{ width: "100%", aspectRatio: 1, borderRadius: 6 }}
+              source={{
+                uri:
+                  episode.episode_url ||
+                  selectedSeason.season_img_url ||
+                  tv_show_img_url,
+              }}
+            />
+            {isPremier && <View style={styles.liveIndicator} />}
+          </View>
           <Text
             style={styles.episodeInfo}
           >{`Season ${selectedSeason.season_number}, Episode ${
@@ -44,6 +48,18 @@ export default function EpisodeCard({
 }
 
 const styles = StyleSheet.create({
+  imageContainer: {
+    position: "relative",
+  },
+  liveIndicator: {
+    position: "absolute",
+    bottom: 8,
+    right: 8,
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: "#22c55e",
+  },
   episodeCard: {
     width: "100%",
   },

@@ -18,6 +18,7 @@ export default function EpisodesList({
             seasonNumber={selectedSeason.season_number}
             showName={showName}
             tv_show_img_url={tv_show_img_url}
+            isPremier={episode.is_premier}
           />
         </View>
       ))}
