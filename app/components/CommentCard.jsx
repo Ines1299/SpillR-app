@@ -22,6 +22,7 @@ import EmojiPicker from "./EmojiPicker.jsx";
 import emojiLookup from "../../utils/emojiLookupObject";
 import { getTvShowByName } from "../../utils/utilsFunctions.js";
 import socket from "../../socket/connection.js";
+import { deleteComment } from "../../utils/utilsFunctions";
 
 //comment flow for a single comment card, complete with how long ago it was
 // posted relative to now, who posted it and a space for other meta data like where it was posted
@@ -92,12 +93,20 @@ export default function CommentCard(props) {
     setComments((prev) => prev.filter((c) => c.comment_id !== comment_id));
   };
 
-  const handlePressDelete = (comment) => {
+  const handlePressDelete = async (comment) => {
     if (isReply) return;
-    console.log("instruction to delete sent");
-    socket.emit("comment:delete", comment);
-    setDeletePressed(!deletePressed);
-    removeComment(comment.comment_id);
+    try {
+      if (isChat) {
+        socket.emit("comment:delete", comment);
+      } else {
+        await deleteComment(comment.comment_id);
+        console.log("DB delete succeeded");
+      }
+      removeComment(comment.comment_id);
+      console.log("removeComment called with:", comment.comment_id);
+    } catch (err) {
+      console.error("Delete failed:", err);
+    }
   };
 
   useEffect(() => {
@@ -279,12 +288,14 @@ export default function CommentCard(props) {
           )}
 
           {user_id === loggedInUser.user_id ? (
-            <TouchableOpacity style={styles.iconGroup}>
+            <TouchableOpacity
+              style={styles.iconGroup}
+              onPress={() => handlePressDelete(comment)}
+            >
               <Delete
                 width={22}
                 height={22}
                 style={{ transform: [{ translateY: 2 }] }}
-                onPress={() => handlePressDelete(comment)}
               />
             </TouchableOpacity>
           ) : (

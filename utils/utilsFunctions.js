@@ -21,7 +21,7 @@ export async function deleteComment(commentId) {
   const { error } = await supabase
     .from("comments")
     .delete()
-    .eq("id", commentId);
+    .eq("comment_id", commentId);
 
   if (error) throw error;
 }
