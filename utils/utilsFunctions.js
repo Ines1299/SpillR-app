@@ -159,6 +159,42 @@ export async function retryRequest(func) {
   }
 }
 
+export async function addFriendAPI(user_id_1, user_id_2) {
+  const { data, error } = await supabase
+    .from("friends")
+    .insert({ user_id_1, user_id_2, is_accepted: true })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
+export async function removeFriendAPI(user_id_1, user_id_2) {
+  const { error } = await supabase
+    .from("friends")
+    .delete()
+    .or(
+      `and(user_id_1.eq.${user_id_1},user_id_2.eq.${user_id_2}),and(user_id_1.eq.${user_id_2},user_id_2.eq.${user_id_1})`,
+    );
+
+  if (error) throw error;
+}
+
+export async function acceptFriendAPI(user_id_1, user_id_2) {
+  const { data, error } = await supabase
+    .from("friends")
+    .update({ is_accepted: true })
+    .or(
+      `and(user_id_1.eq.${user_id_1},user_id_2.eq.${user_id_2}),and(user_id_1.eq.${user_id_2},user_id_2.eq.${user_id_1})`,
+    )
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data;
+}
+
 // export async function searchTvShowsByName(name) {
 //   try {
 //     const { data: localData, error: localError } = await supabase

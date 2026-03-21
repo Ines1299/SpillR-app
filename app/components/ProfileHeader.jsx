@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { UserContext } from "../../context/User";
 import {
   ScrollView,
@@ -9,6 +9,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { addFriendAPI, removeFriendAPI } from "../../utils/utilsFunctions";
 
 export default function ProfileHeader({ userObj }) {
   const { loggedInUser } = useContext(UserContext);
@@ -17,6 +18,37 @@ export default function ProfileHeader({ userObj }) {
   const isFriend = userObj.friends?.some(
     (friend) => friend.friend_user_id === loggedInUser.user_id,
   );
+
+  const [friendStatus, setFriendStatus] = useState(false);
+  const [localFriendCount, setLocalFriendCount] = useState(null);
+
+  useEffect(() => {
+    setLocalFriendCount(Number(userObj.friend_count));
+  }, [userObj.friend_count]);
+
+  useEffect(() => {
+    const already = userObj.friends?.some(
+      (friend) => friend.friend_user_id === loggedInUser.user_id,
+    );
+    setFriendStatus(already);
+  }, [userObj.friends]);
+
+  const handleFriend = async () => {
+    console.log("handleFriend called:", loggedInUser.user_id, userObj.user_id);
+
+    try {
+      if (friendStatus) {
+        await removeFriendAPI(loggedInUser.user_id, userObj.user_id);
+        setLocalFriendCount((prev) => prev - 1);
+      } else {
+        await addFriendAPI(loggedInUser.user_id, userObj.user_id);
+        setLocalFriendCount((prev) => prev + 1);
+      }
+      setFriendStatus(!friendStatus);
+    } catch (err) {
+      console.log("friend action error:", err);
+    }
+  };
   const router = useRouter();
   console.log(loggedInUser);
   return (
@@ -26,10 +58,13 @@ export default function ProfileHeader({ userObj }) {
           <Text style={styles.username}>{firstName}</Text>
           <Text style={styles.handle}>@{userObj.username}</Text>
         </View>
-        <TouchableOpacity style={styles.editButton}>
+        <TouchableOpacity
+          style={styles.editButton}
+          onPress={!isSelf ? handleFriend : undefined}
+        >
           {isSelf ? (
             <Text style={styles.buttonText}>Edit</Text>
-          ) : isFriend ? (
+          ) : friendStatus ? (
             <Text style={styles.buttonText}>Friends</Text>
           ) : (
             <Text style={styles.buttonText}>Add Friend</Text>
@@ -54,7 +89,7 @@ export default function ProfileHeader({ userObj }) {
                 })
               }
             >
-              <Text style={styles.statNumber}>{userObj.friend_count}</Text>
+              <Text style={styles.statNumber}>{localFriendCount? localFriendCount: ??}</Text>
               <Text style={styles.statLabel}>Friends</Text>
             </TouchableOpacity>
           </View>
