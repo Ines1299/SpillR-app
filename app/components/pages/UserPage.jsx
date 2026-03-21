@@ -27,14 +27,32 @@ export default function UserPage() {
 
   useEffect(() => {
     const fetchUserById = async () => {
-      const result = await getUserByIdAPI(loggedInUser.user_id);
-      const comments = await getCommentsRepliesReactionsById(
-        loggedInUser.user_id,
-      );
-      console.log("result from API:", result);
-      setUserObj(result);
-      setUserComments(comments);
-      setSubscriptions(result.subscriptions);
+      try {
+        const result = await getUserByIdAPI(loggedInUser.user_id);
+        console.log("user fetch ok:", result);
+        setUserObj(result);
+        setSubscriptions(result.subscriptions);
+      } catch (err) {
+        console.log(
+          "getUserByIdAPI failed:",
+          err.response?.status,
+          err.response?.data,
+        );
+      }
+
+      try {
+        const comments = await getCommentsRepliesReactionsById(
+          loggedInUser.user_id,
+        );
+        console.log("comments fetch ok:", comments);
+        setUserComments(comments);
+      } catch (err) {
+        console.log(
+          "getCommentsRepliesReactionsById failed:",
+          err.response?.status,
+          err.response?.data,
+        );
+      }
     };
 
     fetchUserById();
@@ -62,6 +80,7 @@ export default function UserPage() {
     }
   }
   const firstName = loggedInUser.name.split(" ")[0];
+
   return (
     <View style={styles.scrollArea}>
       <ScrollView>

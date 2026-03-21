@@ -46,6 +46,7 @@ export default function CommentCard(props) {
     username: authorUsername,
   } = comment;
   const tv_show_name = comment.tv_show_name || comment.name;
+  console.log("comment obj:", JSON.stringify(comment, null, 2));
   const body = comment.body ? comment.body : emojiLookup(comment.reaction_type);
 
   const { loggedInUser } = useContext(UserContext);
@@ -253,38 +254,38 @@ export default function CommentCard(props) {
           )}
         </View>
       </View>
-      {
-        // isChat &&
-        !isReaction && (
-          <View style={styles.buttonRow}>
+
+      {!isReaction && (
+        <View style={styles.buttonRow}>
+          <TouchableOpacity
+            style={styles.iconGroup}
+            onPress={() => setShowEmojiPicker(!showEmojiPicker)}
+          >
+            <Text style={styles.iconCount}>{reactionCount}</Text>
+            <Reaction width={22} height={22} />
+          </TouchableOpacity>
+
+          {!isReply && (
             <TouchableOpacity
               style={styles.iconGroup}
-              onPress={() => setShowEmojiPicker(!showEmojiPicker)}
+              onPress={handleToggleReplies}
             >
-              <Text style={styles.iconCount}>{reactionCount}</Text>
-              <Reaction width={22} height={22} />
+              <Text style={styles.iconCount}>{repliesTotal}</Text>
+              <Replies width={22} height={22} />
             </TouchableOpacity>
+          )}
 
-            {!isReply && (
-              <TouchableOpacity
-                style={styles.iconGroup}
-                onPress={handleToggleReplies}
-              >
-                <Text style={styles.iconCount}>{repliesTotal}</Text>
-                <Replies width={22} height={22} />
-              </TouchableOpacity>
-            )}
-
-            {user_id === loggedInUser.user_id && setComments ? (
-              <TouchableOpacity style={styles.iconGroup}>
-                <Delete
-                  width={22}
-                  height={22}
-                  style={{ transform: [{ translateY: 2 }] }}
-                  onPress={() => handlePressDelete(comment_id)}
-                />
-              </TouchableOpacity>
-            ) : (
+          {user_id === loggedInUser.user_id ? (
+            <TouchableOpacity style={styles.iconGroup}>
+              <Delete
+                width={22}
+                height={22}
+                style={{ transform: [{ translateY: 2 }] }}
+                onPress={() => handlePressDelete(comment_id)}
+              />
+            </TouchableOpacity>
+          ) : (
+            !isReply && (
               <TouchableOpacity
                 style={styles.iconGroup}
                 onPress={() => handlePressedSpoiler(comment_id)}
@@ -295,10 +296,10 @@ export default function CommentCard(props) {
                   stroke={isSpoiler ? "#e14444" : "#fff"}
                 />
               </TouchableOpacity>
-            )}
-          </View>
-        )
-      }
+            )
+          )}
+        </View>
+      )}
 
       {showEmojiPicker && (
         <EmojiPicker
