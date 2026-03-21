@@ -89,12 +89,12 @@ const useSocketComments = (
           newComment.runtime_seconds - currentSecondsRef.current,
         );
 
-        // let the buffer/ticker just handle it at the right tim
-        bufferRef.current = [...bufferRef.current, newComment];
-
         //if the new comment added is near your runtime seconds or it's yours add it immediately
         if (isOwnComment || differenceTime <= 40) {
           addOptimisticCommentRef.current(newComment);
+        } else {
+          // let the buffer/ticker just handle it at the right time
+          bufferRef.current = [...bufferRef.current, newComment];
         }
       }
     };
