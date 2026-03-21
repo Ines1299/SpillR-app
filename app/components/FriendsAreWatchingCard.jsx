@@ -34,8 +34,10 @@ export default function FriendsAreWatchingCards({
           { marginBottom: 0, paddingBottom: 0, marginTop: 10, paddingLeft: 10 },
         ]}
       >
-        {episodeInfo.tvShowName} S{episodeInfo.seasonNumber} ep
-        {episodeInfo.episode_number || " special"}
+        {episodeInfo.tvShowName?.length > 13
+          ? episodeInfo.tvShowName.slice(0, 13) + "..."
+          : episodeInfo.tvShowName}{" "}
+        S{episodeInfo.seasonNumber} ep{episodeInfo.episode_number || " special"}
       </Text>
       <View style={styles.card}>
         {episodeInfo.episode_url && (
