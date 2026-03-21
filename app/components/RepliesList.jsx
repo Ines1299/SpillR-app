@@ -20,20 +20,24 @@ const RepliesList = ({ commentId, parentUsername }) => {
   const { loggedInUser } = useContext(UserContext);
 
   useEffect(() => {
+    console.log(parentUsername, "replies list");
     const handleNewReply = (newReply) => {
-      console.log(newReply);
-      console.log(parentUsername, "replies list");
-      newReply.replies_total = 0;
-      newReply.reactions_total = 0;
-      newReply.reactionType_total = {
-        sadTotal: 0,
-        heartTotal: 0,
-        fireTotal: 0,
-        deadTotal: 0,
-        laughingTotal: 0,
-        angryTotal: 0,
+      if (String(newReply.comment_id) !== String(commentId)) return;
+      const replyToAdd = {
+        ...newReply,
+        replies_total: 0,
+        reactions_total: 0,
+        reactionType_total: {
+          sadTotal: 0,
+          heartTotal: 0,
+          fireTotal: 0,
+          deadTotal: 0,
+          laughingTotal: 0,
+          angryTotal: 0,
+        },
       };
-      setReplyList((prev) => [newReply, ...prev]);
+      console.log(replyToAdd);
+      setReplyList((prev) => [replyToAdd, ...prev]);
     };
     socket.on("reply:new", handleNewReply);
     return () => {
