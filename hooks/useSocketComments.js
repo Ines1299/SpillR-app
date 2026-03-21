@@ -102,7 +102,7 @@ const useSocketComments = (
     return () => {
       socket.off("comment:new", handleNewComment);
     };
-  }, [episodeId]);
+  }, [episodeId, loggedInUser]);
 
   // When video is at t=0 and paused, fetch all comments for the episode
   useEffect(() => {

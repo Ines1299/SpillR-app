@@ -67,7 +67,7 @@ export default function LiveChatPage() {
       socket.emit("room:leave", { episodeId: id, userId: user_id });
       console.log(`socket ${user_id} left room ${id}`);
     };
-  }, [id]);
+  }, [id, user_id]);
 
   if (!episode) return <Text>Loading...</Text>;
 
