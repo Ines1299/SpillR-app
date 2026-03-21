@@ -90,7 +90,7 @@ export default function ProfileHeader({ userObj }) {
               }
             >
               <Text style={styles.statNumber}>
-                {localFriendCount ? localFriendCount : "??"}
+                {localFriendCount ? localFriendCount : userObj.friend_count}
               </Text>
               <Text style={styles.statLabel}>Friends</Text>
             </TouchableOpacity>
