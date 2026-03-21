@@ -74,7 +74,9 @@ export default function CommentCard(props) {
       socket.emit("spoiler:mark", comment);
       setComments((prev) =>
         prev.map((c) =>
-          c.comment_id === comment.comment_id ? { ...c, is_spoiler: true } : c,
+          c.comment_id === comment.comment_id
+            ? { ...c, is_spoiler: !c.is_spoiler }
+            : c,
         ),
       );
       console.log("instruction to mark as spoiler sent", comment.comment_id);
