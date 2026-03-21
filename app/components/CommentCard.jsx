@@ -11,7 +11,6 @@ import { getUserById } from "../../utils/utilsFunctions.js";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../../context/User.jsx";
 import { commentStyles } from "../../styles/commentStyles.jsx";
-// import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 import { timeAgo } from "../../utils/CleanTime.js";
 import Replies from "../../assets/comment.jsx";
 import Delete from "../../assets/delete.jsx";
@@ -55,7 +54,6 @@ export default function CommentCard(props) {
 
   const [username, setUserName] = useState(authorUsername || null);
   const [userurl, setUserurl] = useState(avatar_url || null);
-  const [deletePressed, setDeletePressed] = useState(false);
   const [reactionCount, setReactionCount] = useState(reactions_total);
   const [Type_total, setType_total] = useState(reactionType_total);
   const [lastReaction, setlastReaction] = useState("");
@@ -96,18 +94,19 @@ export default function CommentCard(props) {
   const handlePressDelete = async (comment) => {
     console.log("handlePressDelete fired, isReply:", isReply);
     if (isReply) return;
-    try {
-      if (isChat) {
-        socket.emit("comment:delete", comment);
-      } else {
+
+    if (isChat) {
+      socket.emit("comment:delete", comment);
+    } else {
+      try {
         await deleteComment(comment.comment_id);
         console.log("DB delete succeeded");
+      } catch (err) {
+        console.error("Delete failed:", err);
       }
-      removeComment(comment.comment_id);
-      console.log("removeComment called with:", comment.comment_id);
-    } catch (err) {
-      console.error("Delete failed:", err);
     }
+    removeComment(comment.comment_id);
+    console.log("removeComment called with:", comment.comment_id);
   };
 
   useEffect(() => {

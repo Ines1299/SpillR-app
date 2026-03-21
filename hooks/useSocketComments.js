@@ -204,7 +204,6 @@ const useSocketComments = (
     setComments,
     // repliesByComment,
     // postComment,
-    // deleteComment,
     // postReply,
   };
 };
