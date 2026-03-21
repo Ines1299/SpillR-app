@@ -23,6 +23,7 @@ const Post = ({ commentId, runtime_seconds, style }) => {
     comment_id: commentId,
     episode_id: episodeId,
     user_id: loggedInUser.user_id,
+    avatar_url: loggedInUser.avatar_url,
     runtime_seconds: 1,
     is_spoiler: false,
     body: input,

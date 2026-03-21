@@ -24,7 +24,6 @@ const RepliesList = ({ commentId, parentUsername }) => {
       console.log(newReply);
       console.log(parentUsername, "replies list");
       newReply.parent_username = parentUsername;
-      newReply.avatar_url = loggedInUser.avatar_url;
       newReply.replies_total = 0;
       newReply.reactions_total = 0;
       newReply.reactionType_total = {
