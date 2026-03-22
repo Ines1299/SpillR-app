@@ -28,7 +28,15 @@ export default function Home() {
     setLoading(true);
     try {
       const result = await getFeedComments(loggedInUser.user_id, offset);
-      setFeed((prev) => [...prev, ...result]);
+      setFeed((prev) => {
+        const combined = [...prev, ...result];
+        const seen = new Set();
+        return combined.filter((comment) => {
+          if (seen.has(comment.comment_id)) return false;
+          seen.add(comment.comment_id);
+          return true;
+        });
+      });
       setOffset((prev) => prev + 5);
 
       if (result.length < 5) {
