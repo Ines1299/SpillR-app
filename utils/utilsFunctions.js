@@ -87,6 +87,18 @@ export async function deleteSubscriptionAPI(user_id, tv_show_id) {
   );
   return data;
 }
+
+export async function fetchFriendRequests(user_id) {
+  try {
+    const response = await axios.get(
+      `https://spillr-be.onrender.com/api/profiles/${user_id}/requests`,
+    );
+    return response.data.friendRequests;
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 export async function deleteSubscriptionSupa(user_id, tv_show_id) {
   const { data, error } = await supabase
     .from("subscriptions")
@@ -169,13 +181,24 @@ export async function retryRequest(func) {
   }
 }
 
-export async function addFriendAPI(user_id_1, user_id_2) {
+export async function addFriendRequestAPI(user_id_1, user_id_2) {
   const { data, error } = await supabase
     .from("friends")
-    .insert({ user_id_1, user_id_2, is_accepted: true })
+    .insert({ user_id_1, user_id_2, is_accepted: false })
     .select()
     .single();
 
+  if (error) throw error;
+  return data;
+}
+
+export async function acceptFriendRequestAPI(user_id_1, user_id_2) {
+  const { data, error } = await supabase
+    .from("friends")
+    .update({ is_accepted: true })
+    .match({ user_id_1, user_id_2 })
+    .select()
+    .single();
   if (error) throw error;
   return data;
 }

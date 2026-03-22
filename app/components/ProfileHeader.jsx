@@ -9,7 +9,10 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { addFriendAPI, removeFriendAPI } from "../../utils/utilsFunctions";
+import {
+  addFriendRequestAPI,
+  removeFriendAPI,
+} from "../../utils/utilsFunctions";
 
 export default function ProfileHeader({ userObj }) {
   const { loggedInUser } = useContext(UserContext);
@@ -41,7 +44,7 @@ export default function ProfileHeader({ userObj }) {
         await removeFriendAPI(loggedInUser.user_id, userObj.user_id);
         setLocalFriendCount((prev) => prev - 1);
       } else {
-        await addFriendAPI(loggedInUser.user_id, userObj.user_id);
+        await addFriendRequestAPI(loggedInUser.user_id, userObj.user_id);
         setLocalFriendCount((prev) => prev + 1);
       }
       setFriendStatus(!friendStatus);
