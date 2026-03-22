@@ -1,9 +1,10 @@
-import { View, StyleSheet, FlatList } from "react-native";
+import { View, StyleSheet, ScrollView, Text } from "react-native";
 import { useState, useContext, useCallback } from "react";
 import { useFocusEffect } from "expo-router";
-import { UserContext } from "../contexts/UserContext";
-import { fetchFriendRequests } from "../api";
-import FriendRequestCard from "./FriendRequestCard";
+import { UserContext } from "../../context/User.jsx";
+
+import { fetchFriendRequests } from "../../utils/utilsFunctions";
+import NotificationCard from "./NotificationCard.jsx";
 
 export default function NotificationsList() {
   const { loggedInUser } = useContext(UserContext);
@@ -43,16 +44,20 @@ export default function NotificationsList() {
 
   return (
     <ScrollView style={styles.notifications}>
-      {friendRequests.map((request) => (
-        <FriendRequestCard
-          key={request.friends_id.toString()}
-          user_id_1={request.user_id_1}
-          username={request.requester_username}
-          avatar_url={request.requester_avatar_url}
-          onAccept={handleAccept}
-          onDecline={handleDecline}
-        />
-      ))}
+      {!friendRequests ? (
+        <Text>no friend requests yet</Text>
+      ) : (
+        friendRequests.map((request) => (
+          <NotificationCard
+            key={request.friends_id.toString()}
+            user_id_1={request.user_id_1}
+            username={request.requester_username}
+            avatar_url={request.requester_avatar_url}
+            onAccept={handleAccept}
+            onDecline={handleDecline}
+          />
+        ))
+      )}
     </ScrollView>
   );
 }

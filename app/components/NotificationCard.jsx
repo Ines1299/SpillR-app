@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 
-export default function FriendRequestCard({
+export default function NotificationCard({
   user_id_1,
   username,
   avatar_url,
