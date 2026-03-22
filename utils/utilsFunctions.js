@@ -93,7 +93,7 @@ export async function fetchFriendRequests(user_id) {
     const response = await axios.get(
       `https://spillr-be.onrender.com/api/profiles/${user_id}/requests`,
     );
-    return response.data.friendRequests;
+    return response.data.Requests;
   } catch (err) {
     console.log(err);
   }
@@ -188,17 +188,6 @@ export async function addFriendRequestAPI(user_id_1, user_id_2) {
     .select()
     .single();
 
-  if (error) throw error;
-  return data;
-}
-
-export async function acceptFriendRequestAPI(user_id_1, user_id_2) {
-  const { data, error } = await supabase
-    .from("friends")
-    .update({ is_accepted: true })
-    .match({ user_id_1, user_id_2 })
-    .select()
-    .single();
   if (error) throw error;
   return data;
 }
