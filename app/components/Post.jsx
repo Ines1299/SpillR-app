@@ -32,6 +32,7 @@ const Post = ({ commentId, runtime_seconds, style, parentUsername }) => {
   };
 
   const handleSubmit = () => {
+    console.log("handleSubmit called, input:", JSON.stringify(input));
     if (input) {
       const newReply = { ...reply, body: input };
       console.log("client sends reply:", newReply);

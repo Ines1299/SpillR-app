@@ -41,7 +41,7 @@ export default function CommentCard(props) {
     repliesTotal,
     isReaction,
     isReply,
-
+    replies_total,
     is_spoiler: isSpoiler,
     avatar_url,
     username: authorUsername,
@@ -281,7 +281,9 @@ export default function CommentCard(props) {
               style={styles.iconGroup}
               onPress={handleToggleReplies}
             >
-              <Text style={styles.iconCount}>{repliesTotal}</Text>
+              <Text style={styles.iconCount}>
+                {repliesTotal || replies_total}
+              </Text>
               <Replies width={22} height={22} />
             </TouchableOpacity>
           )}

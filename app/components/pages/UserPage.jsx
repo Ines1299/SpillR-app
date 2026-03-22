@@ -45,6 +45,7 @@ export default function UserPage() {
           const comments = await getCommentsRepliesReactionsById(
             loggedInUser.user_id,
           );
+
           setUserComments(comments);
         } catch (err) {
           console.log(
