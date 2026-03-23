@@ -46,11 +46,11 @@ export default function ProfileHeader({ userObj }) {
       if (friendStatus) {
         await removeFriendAPI(loggedInUser.user_id, userObj.user_id);
         setLocalFriendCount((prev) => prev - 1);
+        setFriendStatus(false);
       } else {
         await addFriendRequestAPI(loggedInUser.user_id, userObj.user_id);
-        setLocalFriendCount((prev) => prev + 1);
+        setPendingStatus(true);
       }
-      setFriendStatus(!friendStatus);
     } catch (err) {
       console.log("friend action error:", err);
     }
