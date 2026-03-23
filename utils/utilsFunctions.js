@@ -27,6 +27,15 @@ export async function deleteComment(commentId) {
   if (error) throw error;
 }
 
+export async function deleteReply(replyId) {
+  const { error } = await supabase
+    .from("replies")
+    .delete()
+    .eq("reply_id", replyId);
+
+  if (error) throw error;
+}
+
 export async function getTvShowById(id) {
   let { data, error } = await supabase // get tv show by id
     .from("tv_shows")

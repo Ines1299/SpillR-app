@@ -21,7 +21,7 @@ import EmojiPicker from "./EmojiPicker.jsx";
 import emojiLookup from "../../utils/emojiLookupObject";
 import { getTvShowByName } from "../../utils/utilsFunctions.js";
 import socket from "../../socket/connection.js";
-import { deleteComment } from "../../utils/utilsFunctions";
+import { deleteComment, deleteReply } from "../../utils/utilsFunctions";
 
 //comment flow for a single comment card, complete with how long ago it was
 // posted relative to now, who posted it and a space for other meta data like where it was posted
@@ -96,7 +96,9 @@ export default function CommentCard(props) {
 
   const handlePressDelete = async (comment) => {
     console.log("handlePressDelete fired, isReply:", isReply);
-    if (isReply) return;
+    if (isReply) {
+      await deleteReply(comment.reply_id);
+    }
 
     if (isChat) {
       socket.emit("comment:delete", comment);
