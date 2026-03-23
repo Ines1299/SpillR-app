@@ -10,6 +10,15 @@ import { useEffect } from "react";
 import FloatingParticleProvider from "../context/FloatingParticle";
 import socket from "../socket/connection.js";
 
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync();
+
+SplashScreen.setOptions({
+  duration: 500,
+  fade: true,
+});
+
 export default function RootLayout() {
   useEffect(() => {
     socket.connect();
