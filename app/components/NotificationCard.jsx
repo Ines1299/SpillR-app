@@ -9,13 +9,24 @@ export default function NotificationCard({
   reaction_id,
   reply_id,
   status,
-  comment_body,
+  original_body,
+  notification_type,
+  episode_number,
+  season_number,
+  tv_show_name,
 }) {
   const isFriendRequest = !!onAccept;
 
   const getActionText = () => {
-    if (reply_id) return "replied to your comment";
-    if (reaction_id) return "reacted to your comment";
+    const location = tv_show_name
+      ? ` on ${tv_show_name} S${season_number} E${episode_number}`
+      : "";
+    if (notification_type === "reply_to_comment")
+      return `replied to your comment${location}`;
+    if (notification_type === "reaction_to_comment")
+      return `reacted to your comment${location}`;
+    if (notification_type === "reaction_to_reply")
+      return `reacted to your reply${location}`;
   };
 
   return (
@@ -26,9 +37,10 @@ export default function NotificationCard({
         <Text style={styles.action}>
           {isFriendRequest ? "wants to be your friend" : getActionText()}
         </Text>
-        {!isFriendRequest && comment_body && (
-          <Text style={styles.commentPreview}>"{comment_body}"</Text>
+        {!isFriendRequest && original_body && (
+          <Text style={styles.commentPreview}>"{original_body}"</Text>
         )}
+
         {isFriendRequest && (
           <View style={styles.buttonRow}>
             <TouchableOpacity
@@ -108,5 +120,11 @@ const styles = StyleSheet.create({
     color: "#505050",
     fontSize: 12,
     fontWeight: "800",
+  },
+  commentPreview: {
+    color: "#e4e4e4",
+    fontSize: 13,
+    lineHeight: 15,
+    paddingRight: 8,
   },
 });

@@ -85,6 +85,11 @@ export default function NotificationsList() {
             reaction_id={notification.reaction_id}
             reply_id={notification.reply_id}
             status={notification.status}
+            original_body={notification.original_body}
+            notification_type={notification.notification_type}
+            episode_number={notification.episode_number}
+            season_number={notification.season_number}
+            tv_show_name={notification.tv_show_name}
           />
         ))
       )}
