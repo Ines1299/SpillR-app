@@ -68,6 +68,7 @@ export default function ProfileHeader({ userObj }) {
         <TouchableOpacity
           style={styles.editButton}
           onPress={!isSelf ? handleFriend : undefined}
+          disabled={pendingStatus}
         >
           {isSelf ? (
             <Text style={styles.buttonText}>Edit</Text>
