@@ -37,10 +37,14 @@ export default function RootLayout() {
   });
 
   useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
+    async function prepare() {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+
+      await SplashScreen.hideAsync();
     }
-  }, [fontsLoaded]);
+
+    prepare();
+  }, []);
 
   if (!fontsLoaded) return null;
   return (
