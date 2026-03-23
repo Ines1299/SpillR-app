@@ -36,6 +36,12 @@ export default function RootLayout() {
     Agenda: require("../assets/fonts/Agenda.ttf"),
   });
 
+  useEffect(() => {
+    if (fontsLoaded) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded]);
+
   if (!fontsLoaded) return null;
   return (
     <FloatingParticleProvider>
