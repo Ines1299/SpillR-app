@@ -267,6 +267,16 @@ export async function getFeedComments(user_id, offset) {
   }
 }
 
+export async function getNotificationsForThisUser(user_id) {
+  try {
+    const response = await fetch(`${urlApi}/notifications/${user_id}`);
+    const data = await response.json();
+    return data.notifications;
+  } catch (error) {
+    console.log("Notiifcation fetch failed", error);
+  }
+}
+
 export async function searchLocalTvShows(name) {
   try {
     const { data, error } = await supabase

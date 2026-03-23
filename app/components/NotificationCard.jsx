@@ -6,27 +6,45 @@ export default function NotificationCard({
   avatar_url,
   onAccept,
   onDecline,
+  reaction_id,
+  reply_id,
+  status,
+  comment_body,
 }) {
+  const isFriendRequest = !!onAccept;
+
+  const getActionText = () => {
+    if (reply_id) return "replied to your comment";
+    if (reaction_id) return "reacted to your comment";
+  };
+
   return (
-    <View style={styles.notification}>
+    <View style={[styles.notification, status === "unread" && styles.unread]}>
       <Image source={{ uri: avatar_url }} style={styles.notificationAvatar} />
       <View style={styles.textContainer}>
         <Text style={styles.user}>@{username}</Text>
-        <Text style={styles.action}>wants to be your friend</Text>
-        <View style={styles.buttonRow}>
-          <TouchableOpacity
-            style={styles.acceptButton}
-            onPress={() => onAccept(user_id_1)}
-          >
-            <Text style={styles.acceptText}>Accept</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={styles.declineButton}
-            onPress={() => onDecline(user_id_1)}
-          >
-            <Text style={styles.declineText}>Decline</Text>
-          </TouchableOpacity>
-        </View>
+        <Text style={styles.action}>
+          {isFriendRequest ? "wants to be your friend" : getActionText()}
+        </Text>
+        {!isFriendRequest && comment_body && (
+          <Text style={styles.commentPreview}>"{comment_body}"</Text>
+        )}
+        {isFriendRequest && (
+          <View style={styles.buttonRow}>
+            <TouchableOpacity
+              style={styles.acceptButton}
+              onPress={() => onAccept(user_id_1)}
+            >
+              <Text style={styles.acceptText}>Accept</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.declineButton}
+              onPress={() => onDecline(user_id_1)}
+            >
+              <Text style={styles.declineText}>Decline</Text>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
     </View>
   );

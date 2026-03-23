@@ -6,6 +6,7 @@ import {
   fetchFriendRequests,
   acceptFriendAPI,
   removeFriendAPI,
+  getNotificationsForThisUser,
 } from "../../utils/utilsFunctions";
 
 import NotificationCard from "./NotificationCard.jsx";
@@ -13,6 +14,7 @@ import NotificationCard from "./NotificationCard.jsx";
 export default function NotificationsList() {
   const { loggedInUser } = useContext(UserContext);
   const [friendRequests, setFriendRequests] = useState([]);
+  const [notifications, setNotifications] = useState([]);
 
   useFocusEffect(
     useCallback(() => {
@@ -21,10 +23,17 @@ export default function NotificationsList() {
         console.log("requests:", data);
         setFriendRequests(data);
       };
+
+      const getNotifications = async () => {
+        const data = await getNotificationsForThisUser(loggedInUser.user_id);
+        console.log("notifications:", data);
+        setNotifications(data);
+      };
+
       getRequests();
+      getNotifications();
     }, [loggedInUser.user_id]),
   );
-
   const handleAccept = async (user_id_1) => {
     try {
       console.log(user_id_1, loggedInUser.user_id);
@@ -61,6 +70,21 @@ export default function NotificationsList() {
             avatar_url={request.requester_avatar_url}
             onAccept={handleAccept}
             onDecline={handleDecline}
+          />
+        ))
+      )}
+      {!notifications || notifications.length === 0 ? (
+        <Text style={styles.emptyText}>no notifications yet...</Text>
+      ) : (
+        notifications.map((notification) => (
+          <NotificationCard
+            key={notification.notification_id.toString()}
+            username={notification.actor_username}
+            avatar_url={notification.actor_avatar_url}
+            actor_id={notification.actor_id}
+            reaction_id={notification.reaction_id}
+            reply_id={notification.reply_id}
+            status={notification.status}
           />
         ))
       )}
