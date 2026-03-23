@@ -2,14 +2,18 @@ import { View, Text, Image, StyleSheet, Pressable } from "react-native";
 import { useContext } from "react";
 import { UserContext } from "../../context/User";
 import { commentStyles } from "../../styles/commentStyles.jsx";
+import { useRouter } from "expo-router";
 
 export default function UserAccount({ user }) {
   const { setLoggedInUser } = useContext(UserContext);
-
+  const router = useRouter();
   return (
     <Pressable
       style={[commentStyles.commentsBox, styles.pressable]}
-      onPress={() => setLoggedInUser(user)}
+      onPress={() => {
+        setLoggedInUser(user);
+        router.push("/");
+      }}
     >
       <View style={styles.row}>
         <Image style={styles.avatar} source={{ uri: user.avatar_url }} />
