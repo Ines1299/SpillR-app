@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { useRouter } from "expo-router";
 
 export default function NotificationCard({
   user_id_1,
@@ -12,10 +13,12 @@ export default function NotificationCard({
   original_body,
   notification_type,
   episode_number,
+  episode_id,
   season_number,
   tv_show_name,
 }) {
   const isFriendRequest = !!onAccept;
+  const router = useRouter();
 
   const getActionText = () => {
     const location = tv_show_name
@@ -30,35 +33,42 @@ export default function NotificationCard({
   };
 
   return (
-    <View style={[styles.notification, status === "unread" && styles.unread]}>
-      <Image source={{ uri: avatar_url }} style={styles.notificationAvatar} />
-      <View style={styles.textContainer}>
-        <Text style={styles.user}>@{username}</Text>
-        <Text style={styles.action}>
-          {isFriendRequest ? "wants to be your friend" : getActionText()}
-        </Text>
-        {!isFriendRequest && original_body && (
-          <Text style={styles.commentPreview}>"{original_body}"</Text>
-        )}
+    <TouchableOpacity
+      onPress={() =>
+        episode_id && router.push(`/episode-live-chat/${episode_id}`)
+      }
+      disabled={isFriendRequest}
+    >
+      <View style={[styles.notification, status === "unread" && styles.unread]}>
+        <Image source={{ uri: avatar_url }} style={styles.notificationAvatar} />
+        <View style={styles.textContainer}>
+          <Text style={styles.user}>@{username}</Text>
+          <Text style={styles.action}>
+            {isFriendRequest ? "wants to be your friend" : getActionText()}
+          </Text>
+          {!isFriendRequest && original_body && (
+            <Text style={styles.commentPreview}>"{original_body}"</Text>
+          )}
 
-        {isFriendRequest && (
-          <View style={styles.buttonRow}>
-            <TouchableOpacity
-              style={styles.acceptButton}
-              onPress={() => onAccept(user_id_1)}
-            >
-              <Text style={styles.acceptText}>Accept</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.declineButton}
-              onPress={() => onDecline(user_id_1)}
-            >
-              <Text style={styles.declineText}>Decline</Text>
-            </TouchableOpacity>
-          </View>
-        )}
+          {isFriendRequest && (
+            <View style={styles.buttonRow}>
+              <TouchableOpacity
+                style={styles.acceptButton}
+                onPress={() => onAccept(user_id_1)}
+              >
+                <Text style={styles.acceptText}>Accept</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.declineButton}
+                onPress={() => onDecline(user_id_1)}
+              >
+                <Text style={styles.declineText}>Decline</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 }
 

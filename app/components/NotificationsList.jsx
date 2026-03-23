@@ -88,6 +88,7 @@ export default function NotificationsList() {
             original_body={notification.original_body}
             notification_type={notification.notification_type}
             episode_number={notification.episode_number}
+            episode_id={notification.episode_id}
             season_number={notification.season_number}
             tv_show_name={notification.tv_show_name}
           />
