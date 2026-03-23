@@ -24,12 +24,14 @@ export default function FriendList({ friendList, id }) {
         Friends
       </Text>
       <View>
-        {friendList.map((friend) => (
-          <View key={friend.friends_id}>
-            <FriendCard friendObj={friend} userPageID={id} />
-            <View style={styles.divider} />
-          </View>
-        ))}
+        {friendList
+          .filter((friend) => friend.is_accepted)
+          .map((friend) => (
+            <View key={friend.friends_id}>
+              <FriendCard friendObj={friend} userPageID={id} />
+              <View style={styles.divider} />
+            </View>
+          ))}
       </View>
     </ScrollView>
   );

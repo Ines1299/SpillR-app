@@ -29,17 +29,16 @@ export default function ProfileHeader({ userObj }) {
 
   useEffect(() => {
     const isAccepted = userObj.friends?.some(
-      (friend) => friend.friend_user_id === loggedInUser.user_id,
+      (friend) =>
+        friend.friend_user_id === loggedInUser.user_id && friend.is_accepted,
+    );
+    const isPending = userObj.friends?.some(
+      (friend) =>
+        friend.friend_user_id === loggedInUser.user_id && !friend.is_accepted,
     );
     setFriendStatus(isAccepted);
-  }, [userObj.friends]);
-
-  useEffect(() => {
-    const isPending = userObj.pendingRequests?.some(
-      (request) => request.user_id_1 === loggedInUser.user_id,
-    );
     setPendingStatus(isPending);
-  }, [userObj.pendingRequests]);
+  }, [userObj.friends]);
 
   const handleFriend = async () => {
     try {
