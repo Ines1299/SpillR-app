@@ -1,3 +1,1 @@
-const url = "https://spillr-be.onrender.com";
-
-module.exports = { url };
+export const url = "https://spillr-be-improved.onrender.com";
