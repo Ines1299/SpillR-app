@@ -68,9 +68,6 @@ SOCKET_URL=your_backend_url
 
 ## Team
 
-Built by a team of 6 in 2 weeks during a coding bootcamp.
+Ines Cadete, Oliver Foere, Emmanuella Itopa, Yewen Jin, Jinson Pulikudan Jose, Zhengnan Sun
 
-
-
-
-
+Built in 2 weeks during a coding bootcamp.
