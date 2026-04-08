@@ -30,8 +30,8 @@ The client receives all real-time events via Socket.io but queues them locally. 
 ## Tech stack
 
 - **Framework:** React Native, Expo
-- **Real-time:** Socket.io client
-- **Database:** Supabase REST API (direct reads)
+- **Real-time:** Socket.io client on Express 
+- **Database:** Supabase REST API (direct reads) + custom REST API endpoints on Express
 - **State:** React hooks, custom hooks for Socket.io integration
 
 ## Prerequisites
