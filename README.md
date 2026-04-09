@@ -26,3 +26,7 @@ npm run android   # Android emulator
 npm run ios       # iOS simulator
 npm run web       # Browser
 ```
+
+### Backend repo
+
+[→ View Backend Repo](https://github.com/yewen-jin/spillr-BE)
